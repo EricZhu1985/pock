@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pockorder.dao.LotteryMapper" >
+
+	<resultMap id="lotteryRM" type="com.pockorder.domain.Lottery">
+		<id column="ID" property="lotteryID" jdbcType="INTEGER" />
+		<result column="LOTTERY_NO" property="lotteryNo" jdbcType="VARCHAR"/>
+		<result column="WX" property="customerWx" jdbcType="VARCHAR"/>
+		<result column="TEL" property="customerTel" jdbcType="VARCHAR"/>
+		<result column="RECORD_DATE" property="recordDate" jdbcType="VARCHAR"/>
+		<result column="GETLOTTERY" property="getLottery" jdbcType="VARCHAR"/>
+		<result column="ISVALID" property="isValid" jdbcType="TINYINT"/>
+		<result column="ISFINISH" property="isFinish" jdbcType="TINYINT"/>
+		<result column="FINISHTIME" property="finishTime" jdbcType="TINYINT"/>
+	</resultMap>
+	
+	<resultMap id="lotteryTermRM" type="com.pockorder.domain.LotteryTerm">
+		<id column="LOTTERY_TERM_NO" property="lotteryTermNo" jdbcType="INTEGER" />
+		<result column="START" property="lotteryStart" jdbcType="VARCHAR"/>
+		<result column="END" property="lotteryEnd" jdbcType="VARCHAR"/>
+		<result column="ISEND" property="isEnd" jdbcType="TINYINT"/>
+		<association property="prizedLottery" resultMap="com.pockorder.dao.LotteryMapper.lotteryRM"/>
+	</resultMap>
+	
+	<sql id="Lottery_Column_List" >
+		`ID`, `LOTTERY_NO`, `WX`,`TEL`,`RECORD_DATE`,`GETLOTTERY`,`ISVALID`,
+			`ISFINISH`,`FINISHTIME`,`LOTTERY_TERM_NO`
+	</sql>
+	
+	<!-- 插入订单 -->
+	<insert id="insert" parameterType="com.pockorder.domain.Lottery" keyProperty="lotteryID" useGeneratedKeys="true">
+		INSERT INTO `LOTTERY` (`LOTTERY_NO`,`WX`,`TEL`, `LOTTERY_TERM_NO`, `ISVALID`)
+			values(#{lotteryNo,jdbcType=VARCHAR}, #{customerWx,jdbcType=VARCHAR},
+			#{customerTel,jdbcType=VARCHAR}, (select max(LOTTERY_TERM_NO) FROM LOTTERY_TERM WHERE ISEND=0), #{isValid,jdbcType=TINYINT})
+	</insert>
+	
+	<select id="getNewLotteryNo" resultType="java.lang.String">
+	SELECT MAX(LOTTERY_NO)+1 LOTTERY_NO FROM LOTTERY
+	</select>
+	
+	<select id="getCurrentLotteryList" resultMap="lotteryRM" parameterType="java.lang.String">
+		SELECT
+		<include refid="Lottery_Column_List" />
+		FROM LOTTERY l 
+		WHERE l.LOTTERY_TERM_NO=(select max(LOTTERY_TERM_NO) FROM LOTTERY_TERM WHERE ISEND=0) 
+		ORDER BY l.LOTTERY_NO DESC
+	</select>
+	
+	<select id="selectLotteryTermWithPrize" resultMap="lotteryTermRM">
+	SELECT l.*,lt.START,lt.END,lt.ISEND 
+	FROM LOTTERY l,LOTTERY_TERM lt 
+	WHERE l.LOTTERY_TERM_NO=lt.LOTTERY_TERM_NO AND l.GETLOTTERY=1 ORDER BY lt.START DESC,lt.END DESC
+	</select>
+	
+	<delete id="delete" parameterType="java.lang.String">
+	DELETE FROM `LOTTERY` WHERE ID=#{lotteryID,jdbcType=VARCHAR}
+	</delete>
+	
+	<update id="updateLottery" parameterType="java.lang.String">
+	UPDATE `LOTTERY` SET `WX`=#{customerWx,jdbcType=VARCHAR}, `TEL`=#{customerTel,jdbcType=VARCHAR} 
+	WHERE ID=#{lotteryID,jdbcType=VARCHAR}
+    </update>
+    
+    <select id="selectByID" resultMap="lotteryRM" parameterType="java.lang.String">
+    SELECT l.* FROM `LOTTERY` l WHERE l.`ID`=#{lotteryID,jdbcType=VARCHAR}
+    </select>
+    
+	<update id="finishLottery" parameterType="java.lang.String">
+    UPDATE `LOTTERY` SET `ISFINISH`=1,`FINISHTIME`=now() WHERE ID=#{lotteryID,jdbcType=VARCHAR}
+    </update>
+    
+    <select id="selectValidLotteryByTermNo" resultMap="lotteryRM" parameterType="java.lang.String">
+    SELECT l.* FROM LOTTERY l 
+    WHERE l.LOTTERY_TERM_NO=#{lotteryTermNo,jdbcType=VARCHAR} AND l.ISVALID=1 ORDER BY l.LOTTERY_NO DESC
+    </select>
+    
+    <update id="updateGetLottery" parameterType="java.lang.String">
+    UPDATE `LOTTERY` SET `GETLOTTERY`=1 WHERE ID=#{lotteryID,jdbcType=VARCHAR}
+    </update>
+    
+    <update id="endLotteryTerm" parameterType="java.lang.String">
+    UPDATE `LOTTERY_TERM` SET `ISEND`=1, `END`=now() 
+    WHERE LOTTERY_TERM_NO=#{lotteryTermNo,jdbcType=VARCHAR}
+    </update>
+    
+    <insert id="newLotteryTerm">
+    INSERT INTO `LOTTERY_TERM` (`START`) values(date_format(now(),'%Y-%m-%d'))
+    </insert>
+    
+    <select id="selectCurrentLotteryTerm" resultMap="lotteryTermRM">
+    SELECT LT.* FROM LOTTERY_TERM LT WHERE LT.LOTTERY_TERM_NO=(SELECT MAX(LOTTERY_TERM_NO) FROM LOTTERY_TERM WHERE ISEND=0)
+    </select>
+</mapper>

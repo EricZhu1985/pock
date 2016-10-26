@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pockorder.dao.BlackListMapper" >
+
+	<resultMap id="blackListRM" type="com.pockorder.domain.BlackList">
+		<result column="ID" property="blackListID" jdbcType="VARCHAR"/>
+		<result column="EVENT_DATE" property="eventDate" jdbcType="VARCHAR"/>
+		<result column="CUSTOMER_NAME" property="customerName" jdbcType="VARCHAR"/>
+		<result column="CUSTOMER_TEL" property="customerTel" jdbcType="VARCHAR"/>
+		<result column="EVENT_CONTENT" property="content" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	
+	<sql id="BlackList_Column_List" >
+		`ID`, `EVENT_DATE`, `CUSTOMER_NAME`,`CUSTOMER_TEL`,`EVENT_CONTENT`
+	</sql>
+	
+	<select id="selectByTel" resultMap="blackListRM" parameterType="java.lang.String" >
+	SELECT 
+		<include refid="BlackList_Column_List" />
+		FROM `BLACKLIST`
+		WHERE CUSTOMER_TEL = #{customerTel}
+	</select>
+	
+	<select id="select" resultMap="blackListRM" parameterType="java.lang.String" >
+	SELECT 
+		<include refid="BlackList_Column_List" />
+		FROM `BLACKLIST`
+		WHERE 1=1 
+		<if test="customerTel != null and customerTel != ''">
+		AND `CUSTOMER_TEL` like CONCAT('%','${customerTel}','%' )
+		</if>
+		ORDER BY EVENT_DATE DESC
+	</select>
+	
+	<insert id="insert"  parameterType="com.pockorder.domain.BlackList" keyProperty="blackListID" useGeneratedKeys="true">
+	INSERT INTO `BLACKLIST` (`EVENT_DATE`,`EVENT_CONTENT`,`CUSTOMER_NAME`,`CUSTOMER_TEL`)
+		values (#{eventDate,jdbcType=DATE}, #{content,jdbcType=VARCHAR}, #{customerName,jdbcType=VARCHAR}, 
+		#{customerTel,jdbcType=VARCHAR})
+	</insert>
+	
+	<delete id="delete">
+	DELETE FROM `BLACKLIST` WHERE ID = #{blackListID,jdbcType=VARCHAR}
+	</delete>
+</mapper>

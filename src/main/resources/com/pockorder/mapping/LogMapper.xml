@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pockorder.dao.LogMapper" >
+
+	<resultMap id="logRM" type="com.pockorder.domain.Log">
+		<result column="ID" property="logID" jdbcType="VARCHAR"/>
+		<result column="CONTENT" property="content" jdbcType="VARCHAR"/>
+		<result column="OPERATE_TIME" property="operateTime" jdbcType="TIMESTAMP"/>
+		<result column="OPERATOR" property="operator" jdbcType="VARCHAR"/>
+		<result column="URL" property="url" jdbcType="VARCHAR"/>
+		<result column="SESSIONID" property="sessionID" jdbcType="VARCHAR"/>
+		<result column="IP" property="ip" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	
+	<sql id="Log_Column_List" >
+		`ID`, `CONTENT`, `OPERATE_TIME`,`OPERATOR`,`URL`
+	</sql>
+	
+	<insert id="insert" parameterType="com.pockorder.domain.Log" keyProperty="logID" useGeneratedKeys="true">
+		INSERT INTO `LOG` (`CONTENT`, `OPERATOR`,`URL`,`IP`,`SESSIONID`)
+		values (#{content,jdbcType=VARCHAR}, #{operator,jdbcType=VARCHAR},
+			#{url, jdbcType=VARCHAR}, #{ip, jdbcType=VARCHAR}, #{sessionID, jdbcType=VARCHAR})
+	</insert>
+	
+</mapper>

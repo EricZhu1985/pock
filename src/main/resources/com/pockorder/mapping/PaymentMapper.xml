@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pockorder.dao.PaymentMapper" >
+
+	<resultMap id="paymentAccountRM" type="com.pockorder.domain.PaymentAccount">
+		<id column="ID" property="paymentAccountID" jdbcType="INTEGER" />
+		<result column="PAYMENT_ACCOUNT_NAME" property="paymentAccountName" jdbcType="VARCHAR"/>
+		<association property="branch" resultMap="com.pockorder.dao.BranchMapper.branchRM"/>
+	</resultMap>
+	
+	<resultMap id="paymentAccountInnerRM" type="com.pockorder.domain.PaymentAccount">
+		<id column="PAYMENT_ACCOUNT_ID" property="paymentAccountID" jdbcType="INTEGER" />
+		<result column="PAYMENT_ACCOUNT_NAME" property="paymentAccountName" jdbcType="VARCHAR"/>
+		<association property="branch" resultMap="com.pockorder.dao.BranchMapper.branchRM"/>
+	</resultMap>
+	
+	<resultMap id="paymentRM" type="com.pockorder.domain.Payment">
+		<id column="ID" property="paymentID" jdbcType="INTEGER" />
+		<result column="PAYMENT_DATE" property="paymentDate" jdbcType="VARCHAR"/>
+		<result column="PAYMENT_TIME" property="paymentTime" jdbcType="VARCHAR"/>
+		<result column="PAID" property="paid" jdbcType="INTEGER"/>
+		<result column="MEMO" property="memo" jdbcType="VARCHAR"/>
+		<result column="PAYMENT_TYPE_ID" property="paymentTypeID" jdbcType="VARCHAR"/>
+		<association property="account" resultMap="com.pockorder.dao.PaymentMapper.paymentAccountInnerRM"/>
+	</resultMap>
+	
+	<resultMap id="paymentStatementRM" type="com.pockorder.domain.PaymentStatement">
+		<result column="PAYMENT_DATE" property="paymentDate" jdbcType="VARCHAR"/>
+		<result column="AMOUNT" property="amount" jdbcType="INTEGER"/>
+		<association property="account" resultMap="com.pockorder.dao.PaymentMapper.paymentAccountInnerRM"/>
+	</resultMap>
+	
+	<sql id="Payment_Account_Column_List" >
+		`ID`, `PAYMENT_ACCOUNT_NAME`
+	</sql>
+	
+	<sql id="Payment_Column_List" >
+		`ID`, `PAYMENT_DATE`, `PAYMENT_TIME`, `PAID`, `MEMO`, `PAYMENT_ACCOUNT_ID`, `PAYMENT_ACCOUNT_NAME`
+	</sql>
+	
+	<sql id="PaymentStatement_Column_List" >
+		`PAYMENT_DATE`, `ACCOUNT`, `PAYMENT_ACCOUNT_ID`, `PAYMENT_ACCOUNT_NAME`, `BRANCH_ID, `BRANCH_NAME`
+	</sql>
+	
+	<select id="getPaymentAccountByBranchID" resultMap="paymentAccountRM">
+	SELECT 
+		<include refid="Payment_Account_Column_List" />
+		FROM `PAYMENT_ACCOUNT`
+		WHERE `BRANCH_ID` = #{branchID}
+	</select>
+	
+	<insert id="insert" parameterType="com.pockorder.domain.Payment" keyProperty="paymentID" useGeneratedKeys="true">
+		INSERT INTO `PAYMENT` (`PAYMENT_DATE`,`PAYMENT_TIME`,`PAYMENT_ACCOUNT_ID`,`PAID`,`MEMO`,`PAYMENT_TYPE_ID`)
+		values (now(), now(), #{account.paymentAccountID,jdbcType=VARCHAR},
+			 #{paid,jdbcType=INTEGER}, #{memo,jdbcType=VARCHAR}, #{paymentTypeID,jdbcType=VARCHAR})
+	</insert>
+	
+	<insert id="insertPaymentOrder" parameterType="java.lang.String">
+		INSERT INTO `PAYMENT_ORDER` (`PAYMENT_ID`, `ORDER_ID`)
+		values (#{paymentID,jdbcType=VARCHAR}, #{orderID,jdbcType=VARCHAR})
+	</insert>
+	
+	<select id="getPaymentByOrderID" resultMap="paymentRM">
+	SELECT 
+		<include refid="Payment_Column_List" />
+		FROM `view_order_payment`
+		WHERE `ORDER_ID` = #{orderID}
+	</select>
+	
+	<select id="getOrderPaid" resultType="java.lang.Integer">
+	SELECT SUM(`PAID`) PAID FROM `view_order_payment` WHERE `ORDER_ID` = #{orderID}
+	</select>
+	
+	<select id="getPaymentStatement" resultMap="paymentStatementRM">
+	SELECT * FROM `view_payment_statement` ps
+		 WHERE 1=1 
+		<if test="start != null and start != ''">
+   		 AND ps.`PAYMENT_DATE` &gt;=#{start,jdbcType=VARCHAR}
+  		</if>
+		<if test="end != null and end != ''">
+  		 AND ps.`PAYMENT_DATE` &lt;=#{end,jdbcType=VARCHAR}
+  		</if>
+		<if test="accountID != null and accountID != ''">
+   		 AND ps.`PAYMENT_ACCOUNT_ID` = #{accountID,jdbcType=VARCHAR}
+  		</if>
+		<if test="branchID != null and branchID != ''">
+   		 AND ps.`BRANCH_ID` &gt;=#{branchID,jdbcType=VARCHAR}
+  		</if>
+		 ORDER BY ps.`PAYMENT_DATE`, ps.`PAYMENT_ACCOUNT_ID`
+	</select>
+</mapper>

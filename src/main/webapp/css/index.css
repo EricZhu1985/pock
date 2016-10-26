@@ -1,0 +1,22 @@
+.finishOrderFmTb {
+	border:solid #95B8E7;
+	border-width:1px 0px 0px 1px;
+}
+
+.finishOrderFmTb td {
+	border:solid #95B8E7;
+	border-width:0px 1px 1px 0px;
+}
+
+.payOrderFmTb {
+	border:solid #95B8E7;
+	border-width:1px 0px 0px 1px;
+}
+
+.payOrderFmTb td {
+	border:solid #95B8E7;
+	border-width:0px 1px 1px 0px;
+}
+
+.shortcut_memo {
+}

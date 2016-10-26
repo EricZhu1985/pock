@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pockorder.dao.BranchMapper" >
+
+	<resultMap id="branchRM" type="com.pockorder.domain.Branch">
+		<id column="BRANCH_ID" property="branchID" jdbcType="INTEGER" />
+		<result column="BRANCH_NAME" property="branchName" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<sql id="Branch_Column_List" >
+		`BRANCH_ID`, `BRANCH_NAME`
+	</sql>
+	
+	<select id="getBranchByID" resultMap="branchRM">
+	SELECT 
+		<include refid="Branch_Column_List" />
+		FROM `BRANCH`
+		WHERE `BRANCH_ID` = #{branchID}
+	</select>
+	
+	<select id="getAllBranch" resultMap="branchRM">
+	SELECT 
+		<include refid="Branch_Column_List" />
+		FROM `BRANCH`
+	</select>
+	
+</mapper>

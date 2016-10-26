@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pockorder.dao.OrderMapper" >
+
+	<resultMap id="customerRM" type="com.pockorder.domain.Customer">
+		<result column="CUSTOMER_NAME" property="name" jdbcType="VARCHAR"/>
+		<result column="CUSTOMER_WX" property="wx" jdbcType="VARCHAR"/>
+		<result column="CUSTOMER_TEL" property="tel" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<resultMap id="orderRM" type="com.pockorder.domain.Order">
+		<id column="ID" property="orderID" jdbcType="INTEGER" />
+		<result column="ORDER_NO" property="orderNo" jdbcType="VARCHAR"/>
+		<result column="ORDER_DATE" property="orderDate" jdbcType="DATE"/>
+		<result column="ORDER_TIME" property="orderTime" jdbcType="TIME"/>
+		<result column="ORDER_PRICE" property="price" jdbcType="INTEGER"/>
+		<result column="ORDER_CONTENT" property="content" jdbcType="VARCHAR"/>
+		<result column="ORDER_PAID" property="paid" jdbcType="INTEGER"/>
+		<result column="ORDER_RECORDER" property="recorder" jdbcType="VARCHAR"/>
+		<result column="ORDER_DELIVER_ADDRESS" property="deliverAddress" jdbcType="VARCHAR"/>
+		<result column="ORDER_RECORD_TIME" property="recordTime" jdbcType="VARCHAR"/>
+		<result column="ORDER_FINISHED" property="finished" jdbcType="TINYINT"/>
+		<result column="ORDER_COMPLETE" property="complete" jdbcType="TINYINT"/>
+		<result column="DELETE_FLAG" property="deleteFlag" jdbcType="TINYINT"/>
+		<result column="MEMO" property="memo" jdbcType="VARCHAR"/>
+		<result column="WEIJUJU_NO" property="weijujuNo" jdbcType="VARCHAR"/>
+		<result column="ORDER_REMARK" property="remark" jdbcType="INTEGER"/>
+		<result column="DELIVER_FLAG" property="deliverFlag" jdbcType="TINYINT"/>
+		<association property="branch" resultMap="com.pockorder.dao.BranchMapper.branchRM"/>
+		<association property="customer" resultMap="customerRM"/>
+	</resultMap>
+	
+	<sql id="Order_View_Column_List" >
+		`ID`, `ORDER_NO`, `ORDER_DATE`,`ORDER_TIME`,`ORDER_PRICE`,`ORDER_CONTENT`,`ORDER_PAID`,
+			`CUSTOMER_WX`,`CUSTOMER_NAME`,`CUSTOMER_TEL`,`ORDER_RECORDER`,`ORDER_DELIVER_ADDRESS`,`WEIJUJU_NO`,
+			`ORDER_RECORD_TIME`,`ORDER_FINISHED`,`BRANCH_ID`,`BRANCH_NAME`,`MEMO`,`ORDER_REMARK`,`DELIVER_FLAG`
+	</sql>
+	
+	<!-- 插入订单 -->
+	<insert id="insert" parameterType="com.pockorder.domain.Order" keyProperty="orderID" useGeneratedKeys="true">
+		INSERT INTO `ORDER` (`ORDER_NO`, `ORDER_DATE`,`ORDER_TIME`,`ORDER_PRICE`,`ORDER_CONTENT`,
+			`CUSTOMER_WX`,`CUSTOMER_NAME`,`CUSTOMER_TEL`,`ORDER_RECORDER`,`ORDER_DELIVER_ADDRESS`,`WEIJUJU_NO`,
+			`ORDER_RECORD_TIME`,`ORDER_FINISHED`,`BRANCH_ID`,`MEMO`)
+		values (#{orderNo,jdbcType=VARCHAR}, #{orderDate,jdbcType=DATE}, #{orderTime,jdbcType=TIME}, 
+		#{price,jdbcType=INTEGER}, #{content,jdbcType=VARCHAR}, 
+		#{customer.wx,jdbcType=VARCHAR}, #{customer.name,jdbcType=VARCHAR}, #{customer.tel,jdbcType=VARCHAR}, 
+		#{recorder,jdbcType=VARCHAR}, #{deliverAddress,jdbcType=VARCHAR}, #{weijujuNo,jdbcType=VARCHAR}, 
+		now(), false, #{branch.branchID,jdbcType=INTEGER},
+		#{memo,jdbcType=VARCHAR})
+	</insert>
+	
+	<select id="selectByPrimaryKey" resultMap="orderRM" parameterType="java.lang.String" >
+	SELECT 
+		<include refid="Order_View_Column_List" />
+		FROM `view_order`
+		WHERE ID = #{orderID,jdbcType=CHAR}
+	</select>
+	
+	<select id="indexSelect" resultMap="orderRM" parameterType="java.lang.String" >
+	SELECT 
+		<include refid="Order_View_Column_List" />
+		FROM `view_order` WHERE 1=1
+		<if test="startDate != null and startDate != ''">
+   		 AND `ORDER_DATE` &gt;= #{startDate, jdbcType=DATE}
+  		</if>
+		<if test="endDate != null and endDate != ''">
+		    AND `ORDER_DATE` &lt;= #{endDate, jdbcType=DATE}
+		</if>
+		<if test="content != null and content != ''">
+		    AND `ORDER_CONTENT` like CONCAT('%','${content}','%' )
+		</if>
+		<if test="customerTel != null and customerTel != ''">
+		    AND `CUSTOMER_TEL` like CONCAT('%','${customerTel}','%' )
+		</if>
+		<if test="customerWx != null and customerWx != ''">
+		    AND `CUSTOMER_WX` like CONCAT('%','${customerTel}','%' )
+		</if>
+		<if test="branchID != null and branchID != ''">
+		    AND `BRANCH_ID` = #{branchID}
+		</if>
+		<if test="finished != null">
+		    AND `ORDER_FINISHED` = #{finished}
+		</if>
+		ORDER BY `ORDER_DATE` ASC, 
+		<if test="orderBy != null">
+		`${orderBy}` ASC,
+		</if>
+		 `ID` DESC
+	</select>
+	
+	<select id="selectMaxWeijujuNo" resultType="java.lang.String">
+	SELECT MAX(`WEIJUJU_NO`) WEIJUJU_NO FROM `ORDER`
+	</select>
+	
+	<select id="selectCurrentOrderNo" resultType="java.lang.Integer">
+	SELECT MIN(ORDER_NO) ORDER_NO FROM `ORDER` WHERE `ORDER_DATE` = #{orderDate, jdbcType=DATE} AND `ORDER_NO`>0
+	</select>
+	
+	<update id="updateFinished" flushCache="true">
+	UPDATE `ORDER` SET `ORDER_FINISHED`=#{finished}  WHERE ID=#{orderID}
+	</update>
+	
+	<update id="update" flushCache="true" parameterType="com.pockorder.domain.Order">
+	UPDATE `ORDER` SET `ORDER_DATE`= #{orderDate},
+		`ORDER_TIME`= #{orderTime},
+		`ORDER_PRICE`= #{price},
+		`ORDER_CONTENT`= #{content},
+		`CUSTOMER_WX`= #{customer.wx},
+		`CUSTOMER_NAME`= #{customer.name},
+		`CUSTOMER_TEL`= #{customer.tel},
+		`ORDER_RECORDER`= #{recorder},
+		`ORDER_DELIVER_ADDRESS`= #{deliverAddress},
+		`MEMO`= #{memo},
+		`WEIJUJU_NO`= #{weijujuNo},
+		`BRANCH_ID`= #{branch.branchID},
+		`ORDER_NO`= #{orderNo} 
+		WHERE ID= #{orderID}
+	</update>
+	
+	<update id="delete" flushCache="true">
+	 UPDATE `ORDER` SET `DELETE_FLAG`=true WHERE ID=#{orderID}
+	</update>
+	
+	<update id="updateRemark" flushCache="true">
+	UPDATE `ORDER` SET `ORDER_REMARK`=#{remark}  WHERE ID=#{orderID}
+	</update>
+	
+	<select id="selectByDateAndTel" resultMap="orderRM" parameterType="java.lang.String" >
+	SELECT 
+		<include refid="Order_View_Column_List" />
+		FROM `view_order`
+		WHERE ORDER_DATE = #{orderDate,jdbcType=CHAR} AND CUSTOMER_TEL = #{customerTel,jdbcType=CHAR}
+	</select>
+	
+	<update id="updatePaid" flushCache="true">
+	UPDATE `ORDER` SET `ORDER_PAID`=#{paid}  WHERE ID=#{orderID,jdbcType=INTEGER}
+	</update>
+	
+	<update id="updateDeliverFlag" flushCache="true">
+	UPDATE `ORDER` SET `DELIVER_FLAG`=#{deliverFlag} WHERE ID=#{orderID}
+	</update>
+	
+</mapper>
