@@ -551,14 +551,10 @@ function saveOrderForm() {
 					title: '成功',
 					msg: '增加成功！'
 				});
-				$('#addOrderForm').form('reset');
-				$('#addFormPaymentAccount').combobox('select', $('#addFormPaymentAccount').combobox('getData')[0].paymentAccountID);
-				$('#tt').tabs('select', '订单');
 				
 
 			    var orderDate = $('#addFormDate').datebox('getValue');
 			    var tel = $('#addFormTel').textbox('getValue');
-
 			    //判断是否黑名单
 				$.ajax({
 					type: "post",
@@ -586,6 +582,9 @@ function saveOrderForm() {
 				});
 				
                 //$('#dg').datagrid('reload');    // reload the user data
+				$('#addOrderForm').form('reset');
+				$('#addFormPaymentAccount').combobox('select', $('#addFormPaymentAccount').combobox('getData')[0].paymentAccountID);
+				$('#tt').tabs('select', '订单');
                 loadList();
                 
 				if(order.orderDate == getNowFormatDate()) {

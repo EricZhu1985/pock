@@ -289,7 +289,7 @@
 						<tr>
 							<td>支付：</td>
 							<td>
-								<input name="paid" class="easyui-numberbox" value="0" style="width:50px" data-options="required:true,validType:'number',min:0">
+								<input name="paid" class="easyui-numberbox" value="0" style="width:50px" data-options="required:true,validType:'number'">
 								<select name="paymentAccountID" class="easyui-combobox" panelHeight="auto" style="width:80px"
 		                            	data-options="
 		                            		required:true,
@@ -324,7 +324,7 @@
 							<input type="button" value="今天" onclick="today('#addFormDate')"/>
 							<input type="button" value="明天" onclick="tomorrow('#addFormDate')"/></td>
 						<td style="color:red">取货时间：</td>
-						<td><input id="addFormTime" name="orderTime" class="easyui-textbox"></td>
+						<td><input id="addFormTime" name="orderTime" class="easyui-textbox" required="true"></td>
 					</tr>
 					<tr>
 						<td style="color:red">蛋糕：</td>
