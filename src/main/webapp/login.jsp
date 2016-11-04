@@ -7,20 +7,36 @@
 <title>Insert title here</title>
 <script type="text/javascript" src="js/jquery.min.js"></script>
 <script>
+
+function isIE() { //ie?
+  if (!!window.ActiveXObject || "ActiveXObject" in window)
+    return true;
+  else
+    return false;
+}
+
 function login() {
-	
+
+	var browser = "OTHER";
+    if(isIE()) {
+    	browser = "IE";
+    }
+    
 	$.ajax({
 		type: 'post',
 		url: 'login',
 		data: {
 			'pwd' : $('#pwd').val(),
-			'name' : $('#name').val()
+			'name' : $('#name').val(),
+			'browser': browser
 		},
 		dataType: 'json',
 		success: function (result) {
 			var ret = eval('('+result+')');
 			if(ret) {
 				document.location = "index.jsp";
+			} else {
+				alert('登陆失败！');
 			}
 		}
 	});

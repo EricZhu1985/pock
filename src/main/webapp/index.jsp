@@ -1,7 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import="com.pockorder.constant.*,com.pockorder.domain.*" %>
-<% int rights = ((User) session.getAttribute(SessionConst.USER)).getRights(); %>
+<% int rights = ((User) session.getAttribute(SessionConst.USER)).getRights();
+	boolean CANPRINT = session.getAttribute(SessionConst.BROWSER).equals("IE");%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -53,8 +54,7 @@
 	}
     
 	var USER_RIGHTS = '';
-	var CANPRINT = '';
-	
+	var CANPRINT = <%= CANPRINT %>;
 	$(function(){
 
 		$.extend($.fn.validatebox.defaults.rules, {
@@ -83,16 +83,19 @@
 
 		$('#dg').datagrid('options').url = 'order/indexlist';
 		loadList();
+
+        <% if(rights == 0) { %>
 		$('#paydg').datagrid('options').url = 'payment/statement';
 		loadPayList();
+        <% } %>
 		var curr_time = new Date();
 		var strDate = curr_time.getFullYear()+"-";
 		strDate += curr_time.getMonth()+1+"-";
 		strDate += curr_time.getDate();
-
 		var oneMonthAgo = new Date();
 		oneMonthAgo.setMonth(oneMonthAgo.getMonth()-1);
 		var oneMonthAgoStr = oneMonthAgo.getFullYear() + "-" + (oneMonthAgo.getMonth() + 1) + "-" + oneMonthAgo.getDate();
+
 		$('#order_date_start').datebox('setValue', strDate);
 		$('#paytoolbar_date_start').datebox('setValue', oneMonthAgoStr);
 		$('#paytoolbar_date_end').datebox('setValue', strDate);
@@ -670,11 +673,10 @@
 			<div><span id="jatoolsOrderContentSpan"></span></div>
 		</div>
 	</div>
-    <?php if($canPrint) { ?>
-	
+	<% if(CANPRINT) { %>
 	<!-- 插入打印控件 -->
 	<OBJECT  ID="jatoolsPrinter" CLASSID="CLSID:B43D3361-D075-4BE2-87FE-057188254255"
                   codebase="jatoolsPrinter.cab#version=8,6,0,0"></OBJECT>  
-    <?php } ?>
+	<% } %>
 </body>
 </html>

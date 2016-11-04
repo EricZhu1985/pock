@@ -26,11 +26,13 @@ public class UserRestController {
     @Logged
     public boolean login(
     		@RequestParam(value="name") String name,
-    		@RequestParam(value="pwd") String pwd) {
+    		@RequestParam(value="pwd") String pwd,
+    		@RequestParam(value="browser", defaultValue="OTHER") String browser) {
     	//logService.log(request, "");
         User user = userService.getUserByPwd(name, pwd);
         if(user != null) {
         	session.setAttribute(SessionConst.USER, user);
+        	session.setAttribute(SessionConst.BROWSER, browser);
         	return true;
         }
         return false;

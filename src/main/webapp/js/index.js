@@ -639,6 +639,7 @@ function printOrder(typeSymbol, orderID) {
 		data: "orderID=" + orderID,
 		success: function (result) {
 			var order = eval('('+result+')');
+			//alert(order);
 			printOrderCallback(typeSymbol, order);
 		}
 	});
@@ -952,10 +953,15 @@ function printLabel() {
         
 	
 function detailWindow(id) {
-	window.open('order/detail?orderID=' + id, 'newwindow', 'height=700, width=400, top=0, left=0, toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, status=no');   
+	window.open('detail.do?orderID=' + id, 'newwindow', 'height=700, width=400, top=0, left=0, toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, status=no');   
+	//window.open('order/detail?orderID=' + id, 'newwindow', 'height=700, width=400, top=0, left=0, toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, status=no');   
 }
 
 function detailKitchenWindow(id) {
+	if(!CANPRINT) {
+		alert("此功能只支持IE浏览器");
+		return;
+	}
 	//window.open('detailkitchen.php?ID=' + id, 'newwindow', 'height=700, width=400, top=0, left=0, toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, status=no');   
 	printOrder("", id);
 }
