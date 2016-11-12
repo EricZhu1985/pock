@@ -252,7 +252,7 @@ public class OrderService {
 	}
 	
 	public boolean testRepeatOrder(String orderDate, String tel) {
-		if(orderMapper.selectByDateAndTel(orderDate, tel).size() > 0) {
+		if(orderMapper.selectByDateAndTel(orderDate, tel).size() > 1) {
 			return true;
 		}
 		return false;

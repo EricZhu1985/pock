@@ -327,7 +327,7 @@
 							<input type="button" value="今天" onclick="today('#addFormDate')"/>
 							<input type="button" value="明天" onclick="tomorrow('#addFormDate')"/></td>
 						<td style="color:red">取货时间：</td>
-						<td><input id="addFormTime" name="orderTime" class="easyui-textbox" required="true"></td>
+						<td><input id="addFormTime" name="orderTime" class="easyui-textbox" required="true" value="00:00:00"></td>
 					</tr>
 					<tr>
 						<td style="color:red">蛋糕：</td>

@@ -567,7 +567,7 @@ function saveOrderForm() {
 						}
 					}
 				});
-
+				
 			    //判断是否重复订单
 				$.ajax({
 					type: "post",
@@ -638,7 +638,7 @@ function printOrder(typeSymbol, orderID) {
 		url: "order/detail",
 		data: "orderID=" + orderID,
 		success: function (result) {
-			var order = eval('('+result+')');
+			var order = result ;
 			//alert(order);
 			printOrderCallback(typeSymbol, order);
 		}
@@ -657,21 +657,27 @@ function printOrderCallback(typeSymbol, order) {
         
  
     if(CANPRINT) {
+    	var s = "";
+    	if(order.branch_id == 2) {
+    		s = "▲";
+    	} else if(order.branch_id == 3) {
+    		s = "[西樵]";
+    	}
 		document.getElementById("jatoolsOrderNoSpan").innerHTML = typeSymbol + order.orderNo;
-	document.getElementById("jatoolsOrderTimeSpan").innerHTML = order.orderTime;
-	document.getElementById("jatoolsBranchNameSpan").innerHTML = order.branch_id == 2 ? "▲" : "";
-	document.getElementById("jatoolsOrderContentSpan").innerHTML = order.content;
+		document.getElementById("jatoolsOrderTimeSpan").innerHTML = order.orderTime;
+		document.getElementById("jatoolsBranchNameSpan").innerHTML = s;
+		document.getElementById("jatoolsOrderContentSpan").innerHTML = order.content;
 
-	//打印文档对象9
-	var myDoc = {
-		settings : {
-			paperWidth : 800,
-			paperHeight : "auto" // 小票打印，高度自动					
-		},
-		marginIgnored : true,
-		documents : document,
-		copyrights : '杰创软件拥有版权  www.jatools.com'
-	};
+		//打印文档对象9
+		var myDoc = {
+			settings : {
+				paperWidth : 800,
+				paperHeight : "auto" // 小票打印，高度自动					
+			},
+			marginIgnored : true,
+			documents : document,
+			copyrights : '杰创软件拥有版权  www.jatools.com'
+		};
 	// 调用打印方法
     //alert(jatoolsPrinter.printPreview);
     //jatoolsPrinter.printPreview(myDoc); // 打印预览

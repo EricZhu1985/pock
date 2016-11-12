@@ -282,7 +282,7 @@ public class OrderRestController {
     @RequestMapping("/testrepeatorder")
 	public boolean testRepeatOrder(@RequestParam(value="orderDate") String orderDate,
     		@RequestParam(value="tel") String tel) {
-		if(orderService.testRepeatOrder(orderDate, tel)) {
+		if(tel != null && !tel.equals("") && orderService.testRepeatOrder(orderDate, tel)) {
 			return true;
 		}
 		return false;
