@@ -26,5 +26,37 @@
 <p>2.增加订单表单时间默认为00:00:00。</p>
 <p>3.修复了IE下后厨功能无法使用。</p>
 
+
+order增加字段hasBonusPoint
+
+CREATE OR REPLACE VIEW `view_order`
+AS SELECT
+   `o`.`ID` AS `ID`,
+   `o`.`ORDER_NO` AS `ORDER_NO`,
+   `o`.`ORDER_DATE` AS `ORDER_DATE`,
+   `o`.`ORDER_TIME` AS `ORDER_TIME`,
+   `o`.`ORDER_PRICE` AS `ORDER_PRICE`,
+   `o`.`ORDER_CONTENT` AS `ORDER_CONTENT`,
+   `o`.`ORDER_PAID` AS `ORDER_PAID`,
+   `o`.`CUSTOMER_WX` AS `CUSTOMER_WX`,
+   `o`.`CUSTOMER_NAME` AS `CUSTOMER_NAME`,
+   `o`.`CUSTOMER_TEL` AS `CUSTOMER_TEL`,
+   `o`.`ORDER_RECORDER` AS `ORDER_RECORDER`,
+   `o`.`ORDER_DELIVER_ADDRESS` AS `ORDER_DELIVER_ADDRESS`,
+   `o`.`ORDER_RECORD_TIME` AS `ORDER_RECORD_TIME`,
+   `o`.`ORDER_FINISHED` AS `ORDER_FINISHED`,
+   `o`.`ORDER_COMPLETE` AS `ORDER_COMPLETE`,
+   `o`.`DELETE_FLAG` AS `DELETE_FLAG`,
+   `o`.`MEMO` AS `MEMO`,
+   `o`.`WEIJUJU_NO` AS `WEIJUJU_NO`,
+   `o`.`BRANCH_ID` AS `BRANCH_ID`,
+   `o`.`ORDER_REMARK` AS `ORDER_REMARK`,
+   `o`.`DELIVER_FLAG` AS `DELIVER_FLAG`,
+   `o`.`HASBONUSPOINT` AS `HASBONUSPOINT`,   `b`.`BRANCH_NAME` AS `BRANCH_NAME`
+FROM (`order` `o` left join `branch` `b` on((`b`.`BRANCH_ID` = `o`.`BRANCH_ID`))) where (`o`.`DELETE_FLAG` = 0);
+
+
+
+
 </body>
 </html>

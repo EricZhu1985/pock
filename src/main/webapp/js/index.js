@@ -202,6 +202,7 @@ function transferOrder(orderID) {
  */
 function openFinishOrderDlg(orderID) {
 	var order = getOrder(orderID);
+	var hasBonusPoint = order.hasBonusPoint;
 	var paymentArr = [];
 	$.ajax({
         url : 'payment/getorderpayment?orderID=' + orderID,
@@ -227,11 +228,52 @@ function openFinishOrderDlg(orderID) {
     $('#finishdlg').dialog('open').dialog('center');
     document.getElementById('finishOrderPaidTD').innerHTML = totalPaid;
     //document.getElementById('finishOrderTotalTD').innerHTML = order.price;
-    document.getElementById('finishOrderContentTD').innerHTML = order.content;
+    var content = order.content;
+    if(hasBonusPoint) {
+    	content = "<font color='red'>[已积分]</font>" + content;
+    }
+    document.getElementById('finishOrderContentTD').innerHTML = content;
     document.getElementById('finishOrderFmOrderID').value = orderID;
     $('#finishOrderFmPrice').textbox("setValue", order.price);
     $('#finishOrderFmPaid').textbox("setValue", order.price - totalPaid);
+    //会员信息查询
     
+	document.getElementById("finishOrderMemberTel").value = order.customerTel;
+	document.getElementById("finishOrderMemberPoint").value = order.price;
+	payOrderFormMemberInfo();
+}
+
+function payOrderFormMemberInfo() {
+	memberInfoSearch(document.getElementById("finishOrderMemberTel").value, "finishOrderMemberPointTd");
+}
+
+function bonusPointFormMemberInfo() {
+	memberInfoSearch(document.getElementById("bonusPointFmTel").value, "bonusPointFmTd");
+}
+
+function memberInfoSearch(memberTel, displayTdId) {
+    if(memberTel) {
+    	var memberInfo;
+		$.ajax({
+	        url : 'member/memberInfo?tel=' + memberTel,
+	        cache : false,
+	        async : false,
+	        type : "POST",
+	        contentType: "application/json; charset=utf-8",
+	        success : function (result){
+	        	if(result) {
+		        	memberInfo = result;
+	        	}
+	        }
+	    });
+		if(memberInfo) {
+			document.getElementById(displayTdId).innerHTML = memberInfo.bonusPoint;
+		} else {
+	    	document.getElementById(displayTdId).innerHTML = "<font color='red'>该手机号不是会员！</font>";
+		}
+    } else {
+    	document.getElementById(displayTdId).innerHTML = "<font color='red'>请输入手机号码！</font>";
+    }
 }
 
 function openPayOrderDlg(orderID) {
@@ -292,6 +334,34 @@ function payOrder() {
 			}
 		}
 	});
+}
+
+function saveBonusPoint() {
+	$('#bonusPointFm').form('submit',{
+		url: 'member/bonusPoint',
+		onSubmit: function(){
+			return $(this).form('validate');
+		},
+		success: function(result){
+			var result = eval('('+result+')');
+			if (result.errMsg){
+				$.messager.alert({
+					title: 'Error',
+					msg: result.errMsg
+				});
+			} else {
+				$.messager.alert({
+					title: '成功',
+					msg: result.msg
+				});
+				$('#bonusPointDlg').dialog('close');
+			}
+		}
+	});
+}
+
+function cancelBonusPoint() {
+	$('#bonusPointDlg').dialog('close');
 }
 
 function cancelPayOrder() {
@@ -362,6 +432,11 @@ function payAndFinishOrder() {
 function cancelPayAndFinishOrder() {
 	$('#finishdlg').dialog('close');
 	$('#finishOrderFm').form('reset');
+}
+
+function bonusPointDlg() {
+	$('#bonusPointDlg').dialog('open');
+	$('#bonusPointFm').form('clear');
 }
 /**
  * 订单列表删除订单操作

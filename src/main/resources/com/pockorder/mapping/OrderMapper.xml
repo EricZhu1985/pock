@@ -26,6 +26,7 @@
 		<result column="WEIJUJU_NO" property="weijujuNo" jdbcType="VARCHAR"/>
 		<result column="ORDER_REMARK" property="remark" jdbcType="INTEGER"/>
 		<result column="DELIVER_FLAG" property="deliverFlag" jdbcType="TINYINT"/>
+		<result column="HASBONUSPOINT" property="hasBonusPoint" jdbcType="TINYINT"/>
 		<association property="branch" resultMap="com.pockorder.dao.BranchMapper.branchRM"/>
 		<association property="customer" resultMap="customerRM"/>
 	</resultMap>
@@ -33,7 +34,7 @@
 	<sql id="Order_View_Column_List" >
 		`ID`, `ORDER_NO`, `ORDER_DATE`,`ORDER_TIME`,`ORDER_PRICE`,`ORDER_CONTENT`,`ORDER_PAID`,
 			`CUSTOMER_WX`,`CUSTOMER_NAME`,`CUSTOMER_TEL`,`ORDER_RECORDER`,`ORDER_DELIVER_ADDRESS`,`WEIJUJU_NO`,
-			`ORDER_RECORD_TIME`,`ORDER_FINISHED`,`BRANCH_ID`,`BRANCH_NAME`,`MEMO`,`ORDER_REMARK`,`DELIVER_FLAG`
+			`ORDER_RECORD_TIME`,`ORDER_FINISHED`,`BRANCH_ID`,`BRANCH_NAME`,`MEMO`,`ORDER_REMARK`,`DELIVER_FLAG`,`HASBONUSPOINT`
 	</sql>
 	
 	<!-- 插入订单 -->
@@ -140,4 +141,7 @@
 	UPDATE `ORDER` SET `DELIVER_FLAG`=#{deliverFlag} WHERE ID=#{orderID}
 	</update>
 	
+	<update id="updateHasBonusPoint" flushCache="true">
+	UPDATE `ORDER` SET `HASBONUSPOINT`=#{hasBonusPoint} WHERE ID=#{orderID}
+	</update>
 </mapper>

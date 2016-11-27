@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pockorder.dao.MemberMapper" >
+
+	<resultMap id="memberRM" type="com.pockorder.domain.Member">
+		<result column="MEMBER_ID" property="memberID" jdbcType="VARCHAR"/>
+		<result column="TEL" property="tel" jdbcType="VARCHAR"/>
+		<result column="TYPE" property="type" jdbcType="INTEGER"/>
+		<result column="BONUS_POINT" property="bonusPoint" jdbcType="FLOAT"/>
+	</resultMap>
+	
+	<resultMap id="cHistoryRM" type="com.pockorder.domain.CHistory">
+		<result column="C_HISTORY_ID" property="cHistoryID" jdbcType="VARCHAR"/>
+		<result column="MEMBER_ID" property="memberID" jdbcType="VARCHAR"/>
+		<result column="BONUS_POINT" property="bonusPoint" jdbcType="FLOAT"/>
+		<result column="CONTENT" property="content" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<sql id="Member_Point_Column_List" >
+		`MEMBER_ID`, `TEL`, `TYPE`,`BONUS_POINT`
+	</sql>
+	
+	<select id="selectByTel" resultMap="memberRM" parameterType="java.lang.String" >
+	SELECT 
+		<include refid="Member_Point_Column_List" />
+		FROM `MEMBER`
+		WHERE TEL = #{tel}
+	</select>
+	
+	<insert id="insert"  parameterType="com.pockorder.domain.Member" keyProperty="memberID" useGeneratedKeys="true">
+	INSERT INTO `MEMBER` (`TEL`,`TYPE`)
+		values (#{tel,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER})
+	</insert>
+	
+	<insert id="insertHistory"  parameterType="com.pockorder.domain.CHistory" keyProperty="C_HISTORY_ID" useGeneratedKeys="true">
+	INSERT INTO `C_HISTORY` (`MEMBER_ID`,`BONUS_POINT`,`CONTENT`)
+		values (#{memberID,jdbcType=VARCHAR}, #{bonusPoint,jdbcType=FLOAT}, #{content,jdbcType=VARCHAR})
+	</insert>
+	
+	<update id="updateBonusPoint">
+	UPDATE `MEMBER` SET BONUS_POINT=BONUS_POINT+#{bonusPoint,jdbcType=FLOAT} WHERE MEMBER_ID=#{memberID,jdbcType=VARCHAR}
+	</update>
+</mapper>

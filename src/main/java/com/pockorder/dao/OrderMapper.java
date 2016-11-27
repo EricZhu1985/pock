@@ -83,8 +83,25 @@ public interface OrderMapper {
 	public int updateRemark(@Param("orderID") String orderID, @Param("remark") String remark);
 	
 	public List<Order> selectByDateAndTel(@Param("orderDate") String orderDate, @Param("customerTel") String customerTel);
-
+	/**
+	 * Update column `PAID` of table `ORDER`
+	 * @param orderID
+	 * @param paid
+	 * @return
+	 */
 	public int updatePaid(@Param("orderID") String orderID, @Param("paid") Integer paid);
-
+	/**
+	 * Update column `DELIVER_FLAG` of table `ORDER`
+	 * @param orderID
+	 * @param deliverFlag
+	 * @return
+	 */
 	public int updateDeliverFlag(@Param("orderID") String orderID, @Param("deliverFlag") Integer deliverFlag);
+	/**
+	 * Update column `HASBONUSPOINT` of table `ORDER`
+	 * @param orderID
+	 * @param hasBonusPoint
+	 * @return
+	 */
+	public int updateHasBonusPoint(@Param("orderID") String orderID, @Param("hasBonusPoint") Integer hasBonusPoint);
 }

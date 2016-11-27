@@ -200,6 +200,7 @@
 				<a href="#" class="easyui-linkbutton" iconCls="icon-edit" onclick="deliverOrder(1)">移到分店</a>
 				<a href="#" class="easyui-linkbutton" iconCls="icon-edit" onclick="deliverOrder(0)">取消移动</a>
 				<a href="#" class="easyui-linkbutton" iconCls="icon-add" onclick="otherPayDlg()">支付</a>
+				<a href="#" class="easyui-linkbutton" iconCls="icon-add" onclick="bonusPointDlg()">积分</a>
 				<a href="#" class="easyui-linkbutton" iconCls="icon-print" onclick="printLabel()">打印标签</a>
                 <% } %>
 				</div>
@@ -212,7 +213,7 @@
     			<% } %>
 			</div>
 			
-			<div id="finishdlg" class="easyui-dialog" style="width:400px;height:280px;padding:10px 20px"
+			<div id="finishdlg" class="easyui-dialog" style="width:440px;height:280px;padding:10px 20px"
 					closed="true" title="取货&支付">
 					
 				<form id="finishOrderFm" method="post">
@@ -222,9 +223,9 @@
 							<td id="finishOrderContentTD" colspan="4"></td>
 						</tr>
 						<tr>
-							<td style="width:50px">总额：</td>
+							<td style="width:60px">总额：</td>
 							<td id="finishOrderTotalTD"><input id="finishOrderFmPrice" name="price" class="easyui-numberbox" style="width:50px" data-options="required:true,min:0,editable:false"></td>
-							<td style="width:50px">已付款：</td>
+							<td style="width:60px">已付款：</td>
 							<td id="finishOrderPaidTD"></td>
 						</tr>
 						<tr>
@@ -240,6 +241,16 @@
 											onLoadSuccess: paymentAccountCBLoadSuccess">
 		                        </select>
 		                    </td>
+						</tr>
+						<tr>
+							<td>当前积分：</td>
+							<td colspan="3" id="finishOrderMemberPointTd"></td>
+						</tr>
+						<tr>
+							<td>会员号：</td>
+							<td><input id="finishOrderMemberTel" name="memberTel" style="width:100px"><img class="easyui-linkbutton" iconCls="icon-search" plain="true" href="#" onclick="payOrderFormMemberInfo();"/></td>
+							<td>积分金额：</td>
+							<td><input id="finishOrderMemberPoint" name="bonusPoint" style="width:60px"></td>
 						</tr>
 					</table>
 					<div>
@@ -314,6 +325,32 @@
 					<div style="margin-top:10px;text-align:center">
 						<a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" onclick="payOther()" style="width:90px">支付</a>
 						<a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-cancel" onclick="cancelPayOther()" style="width:90px">取消</a>
+					</div>		
+				</form>
+			</div>
+			
+			<div id="bonusPointDlg" class="easyui-dialog" style="width:440px;height:190px;padding:10px 20px"
+					closed="true" title="积分">
+				<form id="bonusPointFm" method="post">
+					<table cellpadding="5" cellspacing="0" style="width:100%" class="finishOrderFmTb">
+						<tr>
+							<td>会员号：</td>
+							<td><input id="bonusPointFmTel" class="easyui-textbox" name="tel" style="width:100px" required="true"><img class="easyui-linkbutton" iconCls="icon-search" plain="true" href="#" onclick="bonusPointFormMemberInfo();"/></td>
+							<td>积分：</td>
+							<td><input id="bonusPointFmBonusPoint" class="easyui-textbox" name="bonusPoint" style="width:60px" data-options="required:true,validType:'number'"></td>
+						</tr>
+						<tr>
+							<td>当前积分：</td>
+							<td colspan="3" id="bonusPointFmTd"></td>
+						</tr>
+						<tr>
+							<td>备注：</td>
+							<td colspan="3"><input name="content" class="easyui-textbox" required="true"></td>
+						</tr>
+					</table>
+					<div style="margin-top:10px;text-align:center">
+						<a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" onclick="saveBonusPoint()" style="width:90px">支付</a>
+						<a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-cancel" onclick="cancelBonusPoint()" style="width:90px">取消</a>
 					</div>		
 				</form>
 			</div>

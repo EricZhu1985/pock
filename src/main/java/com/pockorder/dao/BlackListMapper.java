@@ -22,7 +22,7 @@ public interface BlackListMapper {
 
 	public List<BlackList> select(@Param("customerTel")String customerTel, Pager pager);
 	
-	public int insert(BlackList insert);
+	public int insert(BlackList blackList);
 	
 	public int delete(@Param("blackListID")String blackListID);
 }

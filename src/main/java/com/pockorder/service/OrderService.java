@@ -9,9 +9,11 @@ import com.pockorder.constant.OrderConst;
 import com.pockorder.constant.PaymentConst;
 import com.pockorder.dao.OrderMapper;
 import com.pockorder.dao.PaymentMapper;
+import com.pockorder.domain.Member;
 import com.pockorder.domain.Order;
 import com.pockorder.domain.Payment;
 import com.pockorder.exception.BusiException;
+import com.pockorder.exception.DataNotFoundException;
 
 @Service
 @Transactional 
@@ -19,6 +21,8 @@ public class OrderService {
 
 	@Autowired
 	private OrderMapper orderMapper;
+	@Autowired
+	private MemberService memberService;
 
 	@Autowired
 	private PaymentMapper paymentMapper;
@@ -158,7 +162,7 @@ public class OrderService {
 		return orderMapper.updateFinished(orderID, finished);
 	}*/
 	
-	public int payAndFinish(String orderID, Integer paid, String paymentAccountID) throws BusiException {
+	public int payAndFinish(String orderID, Integer paid, String paymentAccountID, String memberTel, Float bonusPoint) throws BusiException {
 		Order order = getOrder(orderID);
 		if(order.getFinished().equals(OrderConst.FINISHED_YES)) {
 			throw new BusiException("该订单已取，不可重复取单！");
@@ -166,6 +170,18 @@ public class OrderService {
 		if(paid > 0) {
 			payOrder(orderID, paid, paymentAccountID);
 		}
+		
+		if(order.getHasBonusPoint() == Order.HASBONUSPOINT_NO && memberTel != null) {
+			Member member;
+			try {
+				member = memberService.getMemberByTel(memberTel);
+			} catch (DataNotFoundException e) {
+				member = memberService.insert(memberTel);
+			}
+			orderMapper.updateHasBonusPoint(orderID, Order.HASBONUSPOINT_YES);
+			memberService.updateBonusPoint(member.getMemberID(), bonusPoint / 10, order.getContent());
+		}
+		
 		return orderMapper.updateFinished(orderID, OrderConst.FINISHED_YES);
 	}
 	

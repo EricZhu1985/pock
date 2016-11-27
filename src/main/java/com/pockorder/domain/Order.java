@@ -2,6 +2,9 @@ package com.pockorder.domain;
 
 public class Order {
 	
+	public static Integer HASBONUSPOINT_NO = 0;
+	public static Integer HASBONUSPOINT_YES = 1;
+	
 	private String orderID;
 	private String orderNo;
 	private String orderDate;
@@ -21,6 +24,7 @@ public class Order {
 	private Branch branch;
 	private String remark;
 	private Integer deliverFlag;
+	private Integer hasBonusPoint;
 	
 	public String getOrderID() {
 		return orderID;
@@ -185,5 +189,11 @@ public class Order {
 			return null;
 		}
 		return customer.getTel();
+	}
+	public Integer getHasBonusPoint() {
+		return hasBonusPoint;
+	}
+	public void setHasBonusPoint(Integer hasBonusPoint) {
+		this.hasBonusPoint = hasBonusPoint;
 	}
 }

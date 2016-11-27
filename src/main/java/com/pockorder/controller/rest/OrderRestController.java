@@ -123,11 +123,13 @@ public class OrderRestController {
     public MsgResult payAndFinish(HttpSession session,
     		@RequestParam(value="orderID") String orderID,
     		@RequestParam(value="paid") Integer paid,
-    		@RequestParam(value="paymentAccountID") String paymentAccountID) {
+    		@RequestParam(value="paymentAccountID") String paymentAccountID,
+    		@RequestParam(value="memberTel", required=false) String memberTel,
+    		@RequestParam(value="bonusPoint", defaultValue="0") Float bonusPoint) {
     	
     	MsgResult msg = new MsgResult();
     	try {
-    		if(orderService.payAndFinish(orderID, paid, paymentAccountID) >= 1) {
+    		if(orderService.payAndFinish(orderID, paid, paymentAccountID, memberTel, bonusPoint) >= 1) {
 	    		msg.setMsg("修改成功！");
 	    	} else {
 	    		msg.setErrMsg("修改失败，数据不存在！");
