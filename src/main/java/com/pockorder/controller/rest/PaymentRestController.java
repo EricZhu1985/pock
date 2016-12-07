@@ -15,7 +15,6 @@ import com.pockorder.domain.Payment;
 import com.pockorder.domain.PaymentAccount;
 import com.pockorder.domain.PaymentStatement;
 import com.pockorder.domain.User;
-import com.pockorder.exception.BusiException;
 import com.pockorder.service.PaymentService;
 import com.pockorder.view.MsgResult;
 
@@ -67,10 +66,12 @@ public class PaymentRestController {
     @Logged
     public MsgResult payother(@RequestParam(value="paid", required=true) Integer paid,
     		@RequestParam(value="paymentAccountID", required=true) String paymentAccountID,
-    		@RequestParam(value="memo", required=false) String memo) {
+    		@RequestParam(value="memo", required=false) String memo,
+    		@RequestParam(value="tel", required=false) String tel,
+    		@RequestParam(value="bonusPoint", required=false) Float bonusPoint) {
 
     	MsgResult msg = new MsgResult();
-		if(paymentService.payOther(paid, paymentAccountID, memo) > 0) {
+		if(paymentService.payOther(paid, paymentAccountID, memo, tel, bonusPoint) > 0) {
     		msg.setMsg("支付成功！");
     	} else {
     		msg.setErrMsg("支付失败！");

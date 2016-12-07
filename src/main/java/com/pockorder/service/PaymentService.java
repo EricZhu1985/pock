@@ -19,6 +19,8 @@ public class PaymentService {
 
 	@Autowired
 	private PaymentMapper paymentMapper;
+	@Autowired
+	private MemberService memberService;
 	
 
 	public List<PaymentAccount> getPaymentAccountByBranchID(String branchID) {
@@ -59,12 +61,18 @@ public class PaymentService {
 		return paymentMapper.getPaymentStatement(start, end, accountID, branchID);
 	}
 	
-	public int payOther(Integer paid, String paymentAccountID, String memo) {
+	public int payOther(Integer paid, String paymentAccountID, String memo,
+			String tel, Float bonusPoint) {
 		Payment payment = new Payment();
 		payment.setMemo(memo);
 		payment.setPaid(paid);
 		payment.setAccountID(paymentAccountID);
 		payment.setPaymentTypeID(PaymentConst.PAYMENT_TYPE_ID_OTHER);
+		
+		if(tel != null && !"".equals(tel)) {
+			memberService.updateBonusPointByTel(tel, bonusPoint / 10, memo);
+		}
+		
 		return paymentMapper.insert(payment);
 	}
 }

@@ -243,6 +243,14 @@ function openFinishOrderDlg(orderID) {
 	payOrderFormMemberInfo();
 }
 
+function otherPayFmPaidOnChange(event) {
+	$("#otherPayFmBonusPoint").textbox("setValue", $("#otherPayFmPaid").textbox("getValue"));
+}
+
+function otherPayFormMemberInfo() {
+	memberInfoSearch(document.getElementById("otherPayMemberTel").value, "otherPayMemberPointTd");
+}
+
 function payOrderFormMemberInfo() {
 	memberInfoSearch(document.getElementById("finishOrderMemberTel").value, "finishOrderMemberPointTd");
 }
@@ -339,7 +347,7 @@ function payOrder() {
 function saveBonusPoint() {
 	$('#bonusPointFm').form('submit',{
 		url: 'member/bonusPoint',
-		onSubmit: function(){
+		onSubmit: function() {
 			return $(this).form('validate');
 		},
 		success: function(result){

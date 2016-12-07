@@ -296,14 +296,14 @@
 				</form>
 			</div>
 			
-			<div id="otherpaydlg" class="easyui-dialog" style="width:400px;height:190px;padding:10px 20px"
+			<div id="otherpaydlg" class="easyui-dialog" style="width:440px;height:280px;padding:10px 20px"
 					closed="true" title="支付">
 				<form id="otherPayFm" method="post" novalidate>
 					<table cellpadding="5" cellspacing="0" style="width:100%" class="finishOrderFmTb">
 						<tr>
-							<td>支付：</td>
-							<td>
-								<input name="paid" class="easyui-numberbox" value="0" style="width:50px" data-options="required:true,validType:'number'">
+							<td style="width:80px">支付：</td>
+							<td colspan="3">
+								<input id="otherPayFmPaid" name="paid" class="easyui-numberbox" value="0" style="width:50px" data-options="required:true,validType:'number',onChange: otherPayFmPaidOnChange">
 								<select name="paymentAccountID" class="easyui-combobox" panelHeight="auto" style="width:80px"
 		                            	data-options="
 		                            		required:true,
@@ -316,8 +316,18 @@
 		                    </td>
 						</tr>
 						<tr>
+							<td>会员号：</td>
+							<td><input id="otherPayMemberTel" class="easyui-textbox" name="tel" style="width:100px"><img class="easyui-linkbutton" iconCls="icon-search" plain="true" href="#" onclick="otherPayFormMemberInfo();"/></td>
+							<td>积分：</td>
+							<td><input id="otherPayFmBonusPoint" class="easyui-textbox" name="bonusPoint" style="width:60px" data-options="validType:'number'"></td>
+						</tr>
+						<tr>
+							<td>当前积分：</td>
+							<td colspan="3" id="otherPayMemberPointTd"></td>
+						</tr>
+						<tr>
 							<td style="width:120px">备注：</td>
-							<td>
+							<td colspan="3">
 								<input name="memo" class="easyui-textbox" data-options="multiline:true" style="height:50px;width:100%">
 							</td>
 						</tr>
