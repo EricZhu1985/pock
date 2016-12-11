@@ -1026,8 +1026,17 @@ function printLabel() {
 			$("#addFormCustomerName").textbox("setValue", name);
 			$("#addFormTel").textbox("setValue", tel);
 			$("#addFormWeijujuNo").textbox("setValue", no);
-            //$("#addFormBranchId").combobox("select", branchId);
-            $("#addFormBranchId")[0].value = branchId;
+            $("#addFormBranchId").combobox("select", branchId);
+			//alert(branchId);
+            //$("#addFormBranchId")[0].value = branchId;
+            var accountData = $('#addFormPaymentAccount').combobox('getData');
+            for(var i = 0; i < accountData.length; i++) {
+            	var paymentAccountName = accountData[i].paymentAccountName;
+            	if(paymentAccountName=='微聚聚') {
+                    $('#addFormPaymentAccount').combobox('select', accountData[i].paymentAccountID);
+                    break;
+            	}
+            }
 			
 			if(arr[7].indexOf("待发货") >= 0){
 				$("#addFormPaid").textbox("setValue", price);
