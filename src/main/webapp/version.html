@@ -26,37 +26,19 @@
 <p>2.增加订单表单时间默认为00:00:00。</p>
 <p>3.修复了IE下后厨功能无法使用。</p>
 
+<h2>v1.1_20161211</h2>
 
-order增加字段hasBonusPoint
+<h3>New features:</h3>
+<p>增加会员积分功能：</p>
+<p>1.主界面增加积分调整。</p>
+<p>2.主界面支付界面加入会员积分。</p>
+<p>3.订单取货界面加入会员积分。</p>
 
-CREATE OR REPLACE VIEW `view_order`
-AS SELECT
-   `o`.`ID` AS `ID`,
-   `o`.`ORDER_NO` AS `ORDER_NO`,
-   `o`.`ORDER_DATE` AS `ORDER_DATE`,
-   `o`.`ORDER_TIME` AS `ORDER_TIME`,
-   `o`.`ORDER_PRICE` AS `ORDER_PRICE`,
-   `o`.`ORDER_CONTENT` AS `ORDER_CONTENT`,
-   `o`.`ORDER_PAID` AS `ORDER_PAID`,
-   `o`.`CUSTOMER_WX` AS `CUSTOMER_WX`,
-   `o`.`CUSTOMER_NAME` AS `CUSTOMER_NAME`,
-   `o`.`CUSTOMER_TEL` AS `CUSTOMER_TEL`,
-   `o`.`ORDER_RECORDER` AS `ORDER_RECORDER`,
-   `o`.`ORDER_DELIVER_ADDRESS` AS `ORDER_DELIVER_ADDRESS`,
-   `o`.`ORDER_RECORD_TIME` AS `ORDER_RECORD_TIME`,
-   `o`.`ORDER_FINISHED` AS `ORDER_FINISHED`,
-   `o`.`ORDER_COMPLETE` AS `ORDER_COMPLETE`,
-   `o`.`DELETE_FLAG` AS `DELETE_FLAG`,
-   `o`.`MEMO` AS `MEMO`,
-   `o`.`WEIJUJU_NO` AS `WEIJUJU_NO`,
-   `o`.`BRANCH_ID` AS `BRANCH_ID`,
-   `o`.`ORDER_REMARK` AS `ORDER_REMARK`,
-   `o`.`DELIVER_FLAG` AS `DELIVER_FLAG`,
-   `o`.`HASBONUSPOINT` AS `HASBONUSPOINT`,   `b`.`BRANCH_NAME` AS `BRANCH_NAME`
-FROM (`order` `o` left join `branch` `b` on((`b`.`BRANCH_ID` = `o`.`BRANCH_ID`))) where (`o`.`DELETE_FLAG` = 0);
+<h3>Bug fixed:</h3>
+<p>1.修正微聚聚订单无法正确选择支付方式的bug。</p>
 
-
-
-
-</body>
-</html>
+<h3>DB update:</h3>
+<p>1.ORDER表增加HASBONUSPOINT字段。</p>
+<p>2.修改view_order。</p>
+<p>3.增加MEMBER表。</p>
+<p>4.增加C_HISTORY表。</p>
