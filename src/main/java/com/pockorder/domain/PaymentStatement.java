@@ -21,8 +21,16 @@ public class PaymentStatement {
 		this.account = account;
 	}
 	
+	public String getPaymentStatementID() {
+		return paymentStatementID;
+	}
+	public void setPaymentStatementID(String paymentStatementID) {
+		this.paymentStatementID = paymentStatementID;
+	}
+
 	private String paymentDate;
 	private String amount;
 	private PaymentAccount account;
+	private String paymentStatementID;
 
 }

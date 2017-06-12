@@ -25,6 +25,7 @@
 	</resultMap>
 	
 	<resultMap id="paymentStatementRM" type="com.pockorder.domain.PaymentStatement">
+		<result column="PAYMENT_STATEMENT_ID" property="paymentStatementID" jdbcType="VARCHAR"/>
 		<result column="PAYMENT_DATE" property="paymentDate" jdbcType="VARCHAR"/>
 		<result column="AMOUNT" property="amount" jdbcType="INTEGER"/>
 		<association property="account" resultMap="com.pockorder.dao.PaymentMapper.paymentAccountInnerRM"/>

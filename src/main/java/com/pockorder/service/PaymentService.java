@@ -58,7 +58,8 @@ public class PaymentService {
 	}
 	
 	public List<PaymentStatement> getPaymentStatement(String start, String end, String accountID, String branchID) {
-		return paymentMapper.getPaymentStatement(start, end, accountID, branchID);
+		List<PaymentStatement> l = paymentMapper.getPaymentStatement(start, end, accountID, branchID);
+		return l;
 	}
 	
 	public int payOther(Integer paid, String paymentAccountID, String memo,
