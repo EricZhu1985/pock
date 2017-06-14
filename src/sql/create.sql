@@ -436,6 +436,7 @@ DROP TABLE `view_payment_statement`;
 
 CREATE ALGORITHM=UNDEFINED DEFINER=`pock`@`%` SQL SECURITY DEFINER VIEW `view_payment_statement`
 AS SELECT
+   concat(`ps`.`PAYMENT_DATE`,'#',`ps`.`PAYMENT_ACCOUNT_ID`) AS `PAYMENT_STATEMENT_ID`,
    `ps`.`PAYMENT_DATE` AS `PAYMENT_DATE`,
    `ps`.`PAYMENT_ACCOUNT_ID` AS `PAYMENT_ACCOUNT_ID`,
    `ps`.`AMOUNT` AS `AMOUNT`,
@@ -443,7 +444,6 @@ AS SELECT
    `pa`.`BRANCH_ID` AS `BRANCH_ID`,
    `pa`.`BRANCH_NAME` AS `BRANCH_NAME`
 FROM (`view_payment_sum` `ps` join `view_payment_account` `pa`) where (`pa`.`ID` = `ps`.`PAYMENT_ACCOUNT_ID`);
-
 
 # Replace placeholder table for view_payment_sum with correct view syntax
 # ------------------------------------------------------------

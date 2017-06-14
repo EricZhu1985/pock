@@ -96,7 +96,7 @@ var clipboardTextMap = new Array();
  * 订单列表操作列生成规则
  */
 function formatOperation(val,row,index) {
-    var branch_name = row.branch? row.branch.brancNname : "";
+    var branch_name = row.branch? row.branch.branchName : "";
     var customer_tel = row.customer? row.customer.tel : "";
     var orderTime = row.orderTime;
     var price = row.price;

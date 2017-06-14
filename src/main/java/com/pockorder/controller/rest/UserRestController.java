@@ -33,6 +33,7 @@ public class UserRestController {
         if(user != null) {
         	session.setAttribute(SessionConst.USER, user);
         	session.setAttribute(SessionConst.BROWSER, browser);
+        	session.setMaxInactiveInterval(-1);
         	return true;
         }
         return false;

@@ -6,7 +6,7 @@
     <head>
 		<title>订单列表</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <script language="javascript" src="../../js/LodopFuncs.js"></script>
+        <script language="javascript" src="../js/LodopFuncs.js"></script>
         
         <script type="text/javascript">
             var LODOP;
@@ -30,7 +30,7 @@
     </head>
     
 	<body>
-       <script language="javascript" src="LodopFuncs.js"></script>
+       <script language="javascript" src="../js/LodopFuncs.js"></script>
 <object  id="LODOP_OB" classid="clsid:2105C259-1E0C-4534-8141-A753534CB4CA" width=0 height=0> 
        <embed id="LODOP_EM" type="application/x-print-lodop" width=0 height=0></embed>
 </object>

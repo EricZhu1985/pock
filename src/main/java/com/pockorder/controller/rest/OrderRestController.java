@@ -23,7 +23,9 @@ public class OrderRestController {
 
 	@Autowired
 	private OrderService orderService;
-	
+
+	@Autowired  
+	private HttpSession session;  
 	/**
 	 * 主页订单列表
 	 * @param session
@@ -59,6 +61,7 @@ public class OrderRestController {
     	view.setRows(list);
     	view.setWeijujuNo(orderService.getLatestWeijujuNo());
     	view.setTotalPrice(totalPrice);
+    	System.out.println(session.getId() + "===============" + session.getMaxInactiveInterval());
         return view;
     }
     /**

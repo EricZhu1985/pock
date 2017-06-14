@@ -50,7 +50,6 @@ public class SecurityFilter implements Filter {
 				request.getRequestDispatcher("/login.jsp").forward(request,response);
 				return;
 			}
-			session.setMaxInactiveInterval(1800);
 		}
 		
 		chain.doFilter(request, response);

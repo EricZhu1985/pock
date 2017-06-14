@@ -433,7 +433,7 @@
 					</tr>
 					<tr>
 						<td>多条插入：</td>
-						<td><input id="addFormRepeatCount" name="repeat_count" class="easyui-textbox"></td>
+						<td><input id="addFormRepeatCount" name="repeatCount" class="easyui-textbox"></td>
 						<td>&nbsp;</td>
 						<td>&nbsp;</td>
 					</tr>
