@@ -9,9 +9,11 @@ import org.springframework.transaction.annotation.Transactional;
 import com.pockorder.constant.PaymentConst;
 import com.pockorder.dao.PaymentMapper;
 import com.pockorder.domain.Branch;
+import com.pockorder.domain.Member;
 import com.pockorder.domain.Payment;
 import com.pockorder.domain.PaymentAccount;
 import com.pockorder.domain.PaymentStatement;
+import com.pockorder.exception.DataNotFoundException;
 
 @Service
 @Transactional
@@ -71,8 +73,16 @@ public class PaymentService {
 		payment.setPaymentTypeID(PaymentConst.PAYMENT_TYPE_ID_OTHER);
 		
 		if(tel != null && !"".equals(tel)) {
-			memberService.updateBonusPointByTel(tel, bonusPoint / 10, memo);
+			Member member;
+			try {
+				member = memberService.getMemberByTel(tel);
+			} catch (DataNotFoundException e) {
+				member = memberService.insert(tel);
+			}
+			
+			memberService.updateBonusPointByTel(member.getMemberID(), bonusPoint / 10, memo);
 		}
+
 		
 		return paymentMapper.insert(payment);
 	}

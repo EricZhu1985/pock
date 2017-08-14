@@ -32,6 +32,12 @@
             value="${jdbc_url}"></property>
         <property name="user" value="${jdbc_username}"></property>
         <property name="password" value="${jdbc_password}"></property>
+        <property name="unreturnedConnectionTimeout" value="1200"></property>
+        <property name="breakAfterAcquireFailure" value="false"></property>
+        <property name="maxIdleTime" value="30"></property>
+        <property name="initialPoolSize" value="10"></property>
+        <property name="maxPoolSize" value="50"></property>
+        <property name="minPoolSize" value="10"></property>
     </bean>
     <!-- ========================================分隔线========================================= -->
     

@@ -61,7 +61,6 @@ public class OrderRestController {
     	view.setRows(list);
     	view.setWeijujuNo(orderService.getLatestWeijujuNo());
     	view.setTotalPrice(totalPrice);
-    	System.out.println(session.getId() + "===============" + session.getMaxInactiveInterval());
         return view;
     }
     /**

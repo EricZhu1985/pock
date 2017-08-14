@@ -741,9 +741,9 @@ function printOrderCallback(typeSymbol, order) {
  
     if(CANPRINT) {
     	var s = "";
-    	if(order.branch_id == 2) {
+    	if(order.branch && order.branch.branchID == 2) {
     		s = "▲";
-    	} else if(order.branch_id == 3) {
+    	} else if(order.branch && order.branch.branchID == 3) {
     		s = "[西樵]";
     	}
 		document.getElementById("jatoolsOrderNoSpan").innerHTML = typeSymbol + order.orderNo;
@@ -981,7 +981,7 @@ function printLabel() {
 					t = arr0[i].substr(18, 5);
                 }
                 if(arr0[i].indexOf("门店") >= 0) {
-                    if(arr0[i].indexOf("雅居乐店") >= 0) {
+                    if(arr0[i].indexOf("佛山雅居乐") >= 0) {
                         branchId = 2;
                     } else if(arr0[i].indexOf("怡翠玫瑰园") >= 0) {
                         branchId = 1;
