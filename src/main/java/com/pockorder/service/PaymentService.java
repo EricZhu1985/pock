@@ -80,7 +80,7 @@ public class PaymentService {
 				member = memberService.insert(tel);
 			}
 			
-			memberService.updateBonusPointByTel(member.getMemberID(), bonusPoint / 10, memo);
+			memberService.updateBonusPoint(member.getMemberID(), bonusPoint / 10, memo);
 		}
 
 		

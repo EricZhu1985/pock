@@ -318,7 +318,7 @@
 						<tr>
 							<td>会员号：</td>
 							<td><input id="otherPayMemberTel" class="easyui-textbox" name="tel" style="width:100px"><img class="easyui-linkbutton" iconCls="icon-search" plain="true" href="#" onclick="otherPayFormMemberInfo();"/></td>
-							<td>积分：</td>
+							<td>积分金额：</td>
 							<td><input id="otherPayFmBonusPoint" class="easyui-textbox" name="bonusPoint" style="width:60px" data-options="validType:'number'"></td>
 						</tr>
 						<tr>
