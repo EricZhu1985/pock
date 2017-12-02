@@ -89,4 +89,6 @@ public interface LotteryMapper {
 	public int newLotteryTerm();
 	
 	public LotteryTerm selectCurrentLotteryTerm();
+	
+	public LotteryTerm selectLatestLotteryResult();
 }

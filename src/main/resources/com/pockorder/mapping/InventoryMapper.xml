@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pockorder.dao.InventoryMapper" >
+
+	<resultMap id="inventoryItemRM" type="com.pockorder.domain.InventoryItem">
+		<id column="ID" property="inventoryItemId" jdbcType="INTEGER" />
+		<result column="NAME" property="name" jdbcType="VARCHAR"/>
+		<result column="UNIT" property="unit" jdbcType="VARCHAR"/>
+		<result column="MEMO" property="memo" jdbcType="VARCHAR"/>
+		<result column="QUANTITY" property="quantity" jdbcType="INTEGER"/>
+	</resultMap>
+	
+	<resultMap id="inventoryRM" type="com.pockorder.domain.Inventory">
+		<id column="ID" property="inventoryId" jdbcType="INTEGER" />
+		<result column="QUANTITY" property="quantity" jdbcType="INTEGER"/>
+		<association property="inventoryItem" resultMap="com.pockorder.dao.InventoryMapper.inventoryItemRM"/>
+	</resultMap>
+	
+	<sql id="Inventory_View_List" >
+		`ID`, `POSITION`, `QUANTITY`,`NAME`,`UNIT`,`INVENTORY_ITEM_ID`
+	</sql>
+	
+	<!-- select id="selectInventory" resultMap="inventoryRM" parameterType="java.lang.String" >
+	SELECT 
+		<include refid="Inventory_View_List" />
+		FROM `view_inventory` WHERE 1=1
+		<if test="itemName != null and itemName != ''">
+   		 AND `NAME` like '#{itemName, jdbcType=VARCHAR}'
+  		</if>
+		<if test="position != null and position != ''">
+		    AND `POSITION` = #{position, jdbcType=INTEGER}
+		</if>
+		ORDER BY
+		<if test="orderBy != null and orderBy != ''">
+		`${orderBy}` ASC,
+		</if>
+		 `ID` ASC
+	</select-->
+	
+	<select id="selectInventoryItem" resultMap="inventoryItemRM" parameterType="java.lang.String" >
+	SELECT `ID`,`NAME`,`UNIT`,`MEMO`,`QUANTITY`
+		FROM `INVENTORY_ITEM` WHERE 1=1
+		<if test="name != null and name != ''">
+   		 AND `NAME` like CONCAT('%','${name}','%' )
+  		</if>
+		<if test="memo != null and memo != ''">
+   		 AND `MEMO` like CONCAT('%','${memo}','%' )
+  		</if>
+		ORDER BY
+		<if test="orderBy != null and orderBy != ''">
+		`${orderBy}` ASC,
+		</if>
+		 `ID` ASC
+	</select>
+	
+	<insert id="insertInventory" parameterType="com.pockorder.domain.Inventory" keyProperty="inventoryId" useGeneratedKeys="true">
+	 INSERT INTO `INVENTORY` (`POSITION`,`QUANTITY`,`INVENTORY_ITEM_ID`)
+		values (#{position, jdbcType=INTEGER}, #{quantity,jdbcType=INTEGER}, #{inventoryItem.inventoryItemId,jdbcType=INTEGER})
+	</insert>
+	
+	<update id="updateInventory" flushCache="true">
+	 UPDATE `INVENTORY` SET `QUANTITY`=#{quantity},`POSITION`=#{position} WHERE ID=#{inventoryId}
+	</update>
+	
+	<update id="deleteInventory" flushCache="true">
+	 DELETE FROM `INVENTORY` WHERE ID=#{inventoryId}
+	</update>
+	
+	<select id="selectInventoryById" resultMap="inventoryRM" parameterType="java.lang.String" >
+		SELECT <include refid="Inventory_View_List" /> FROM view_inventory WHERE ID=#{inventoryId}
+	</select>
+	
+	<insert id="insertInventoryItem" parameterType="com.pockorder.domain.InventoryItem" keyProperty="inventoryItemId" useGeneratedKeys="true">
+	 INSERT INTO `INVENTORY_ITEM` (`NAME`,`UNIT`,`MEMO`,`QUANTITY`)
+		values (#{name, jdbcType=VARCHAR}, #{unit,jdbcType=VARCHAR}, #{memo,jdbcType=VARCHAR}, #{quantity,jdbcType=INTEGER})
+	</insert>
+	
+	<update id="updateInventoryItem" flushCache="true">
+	 UPDATE `INVENTORY_ITEM` SET `NAME`=#{name},`UNIT`=#{unit},`MEMO`=#{memo},`QUANTITY`=#{quantity} WHERE ID=#{inventoryItemId}
+	</update>
+	
+	<update id="deleteInventoryItem" flushCache="true">
+	 DELETE FROM `INVENTORY_ITEM` WHERE ID=#{inventoryItemId}
+	</update>
+	
+	<select id="selectInventoryItemById" resultMap="inventoryItemRM" parameterType="java.lang.String" >
+		SELECT `ID`,`NAME`,`UNIT`,`MEMO`,`QUANTITY` FROM INVENTORY_ITEM WHERE ID=#{inventoryItemId}
+	</select>
+	
+</mapper>

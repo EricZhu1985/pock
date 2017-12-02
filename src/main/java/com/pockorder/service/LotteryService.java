@@ -111,4 +111,8 @@ public class LotteryService {
 		
 		return prizeLottery.getLotteryNo();
 	}
+	
+	public LotteryTerm getLatestPrizedLottery() {
+		return lotteryMapper.selectLatestLotteryResult();
+	}
 }

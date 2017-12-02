@@ -509,7 +509,7 @@
                             </select>
                         </td>
 						<td>微聚聚订单号：</td>
-						<td><input name="weijuju_no" class="easyui-textbox"></td>
+						<td><input name="weijujuNo" class="easyui-textbox"></td>
 					</tr>
 				</table>
 				<div>

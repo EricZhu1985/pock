@@ -6,6 +6,7 @@
     <security:http pattern="/login.jsp" security="none" />
     <security:http pattern="/user/login" security="none" />
     <security:http pattern="/index" security="none" />
+    <security:http pattern="/updateinventoryitemquantitypage*" security="none" />
     
     <security:http use-expressions="true">
 		<security:intercept-url pattern="/**" access="isAuthenticated()" />

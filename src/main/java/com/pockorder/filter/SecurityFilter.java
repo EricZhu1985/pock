@@ -29,7 +29,9 @@ public class SecurityFilter implements Filter {
 		noSecurityPath.add("/login");
 		noSecurityPath.add("/error.htm");
 		noSecurityPath.add("/js/jquery.min.js");
-		
+		noSecurityPath.add("/updateinventoryitemquantitypage.do");
+		noSecurityPath.add("/updateinventoryitemquantity.do");
+
 	}
 
 

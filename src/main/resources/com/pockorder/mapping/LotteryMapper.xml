@@ -90,4 +90,8 @@
     <select id="selectCurrentLotteryTerm" resultMap="lotteryTermRM">
     SELECT LT.* FROM LOTTERY_TERM LT WHERE LT.LOTTERY_TERM_NO=(SELECT MAX(LOTTERY_TERM_NO) FROM LOTTERY_TERM WHERE ISEND=0)
     </select>
+    
+    <select id="selectLatestLotteryResult" resultMap="lotteryTermRM">
+    SELECT l.*,llt.START,llt.END,llt.ISEND FROM `LOTTERY` l, `LOTTERY_TERM` llt WHERE l.`LOTTERY_TERM_NO`=llt.`LOTTERY_TERM_NO` AND l.`LOTTERY_TERM_NO`=(SELECT MAX(lt.LOTTERY_TERM_NO) FROM LOTTERY_TERM lt WHERE lt.ISEND=1) AND l.`GETLOTTERY`=1
+    </select>
 </mapper>
