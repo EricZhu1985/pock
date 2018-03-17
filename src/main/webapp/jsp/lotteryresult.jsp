@@ -20,6 +20,31 @@
 </head>
     <body>
         <div style="text-align:center;color:#FF0000">
+            各位吃货们，PieceOfCake抽奖活动又来啦！每两星期抽一次（下次抽奖时间12月08日），每次抽出一名幸运儿，机会多多，PieceOfCake诚邀您的参与！
+
+
+参与步骤：
+
+1. 在 *朋*友*圈* 分*享*我们家的蛋糕，写出对我们家蛋糕的食评，必须晒出是PieceOfCake蛋糕小姐的哦
+
+ 
+
+2. 发送截图至公众号pocake2013 领取抽奖号码
+
+
+
+​ 
+
+本期奖品： 水果忌廉蛋糕一磅
+
+
+
+抽奖日期：	2017-11-10 ~ 2017-11-24
+中奖号码：	2016020839
+领奖时间：	不限
+活动奖品：	生日蛋糕一磅（168元）
+中奖须知：	需领取奖品的亲，请提前致电我们预留哦，联系电话18127132896。
+最终解释权归佛山市南海区蛋糕小姐蛋糕店
             <h1>抽奖公告</h1>
             <table style="align:center;margin:0 auto;text-align:left">
                 <tr><td style="width:5em">抽奖日期：</td><td><%= lt.getLotteryStart() %>&nbsp;~&nbsp;<%= lt.getLotteryEnd().substring(0, 10) %></td></tr>

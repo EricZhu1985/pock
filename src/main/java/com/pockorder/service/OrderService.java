@@ -23,6 +23,8 @@ public class OrderService {
 	private OrderMapper orderMapper;
 	@Autowired
 	private MemberService memberService;
+	@Autowired
+	private KeywordWarningService keywordWarningService;
 
 	@Autowired
 	private PaymentMapper paymentMapper;
@@ -108,6 +110,8 @@ public class OrderService {
 			this.payOrder(order.getOrderID(), paid, paymentAccountID);
 		}
 		
+		keywordWarningService.updateKeywordAmount(order, -1);
+		
 		return order;
 	}
 	
@@ -189,7 +193,7 @@ public class OrderService {
 		return orderMapper.updateFinished(orderID, finished);
 	}
 	
-	public int updateOrder(String orderID, String orderDate, String orderTime, Integer price, String content,
+	public Order updateOrder(String orderID, String orderDate, String orderTime, Integer price, String content,
 			String customerWx, String customerName, String customerTel, String recorder,
 			String deliverAddress, String memo, String weijujuNo, String branchID, String orderNoFlag) {
 
@@ -197,8 +201,10 @@ public class OrderService {
 			branchID = null;
 		}
 		
-		Order order = new Order();
-		order.setOrderID(orderID);
+		Order order = orderMapper.selectByPrimaryKey(orderID);
+		keywordWarningService.updateKeywordAmount(order, 1);
+		
+		//order.setOrderID(orderID);
 		order.setOrderDate(orderDate);
 		order.setOrderTime(orderTime);
 		order.setPrice(price);
@@ -215,8 +221,12 @@ public class OrderService {
 		order.setCustomerWx(customerWx);
 		
 		order.setBranchID(branchID);
-		
-		return updateOrder(order, orderNoFlag);
+
+		keywordWarningService.updateKeywordAmount(order, -1);
+		if(updateOrder(order, orderNoFlag) < 1) {
+			return null;
+		}
+		return order;
 	}
 	/**
 	 * Update Order
@@ -255,6 +265,8 @@ public class OrderService {
 	 * @return
 	 */
 	public int delete(String orderID) {
+		Order order = orderMapper.selectByPrimaryKey(orderID);
+		keywordWarningService.updateKeywordAmount(order, 1);
 		return orderMapper.delete(orderID);
 	}
 	/**
@@ -268,6 +280,9 @@ public class OrderService {
 	}
 	
 	public boolean testRepeatOrder(String orderDate, String tel) {
+		if(tel == null || "".equals(tel)) {
+			return false;
+		}
 		if(orderMapper.selectByDateAndTel(orderDate, tel).size() > 1) {
 			return true;
 		}

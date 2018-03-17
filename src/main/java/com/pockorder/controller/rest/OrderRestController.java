@@ -13,9 +13,14 @@ import com.pockorder.annotation.Logged;
 import com.pockorder.constant.OrderConst;
 import com.pockorder.domain.Order;
 import com.pockorder.exception.BusiException;
+import com.pockorder.service.BlackListService;
+import com.pockorder.service.KeywordWarningService;
 import com.pockorder.service.OrderService;
+import com.pockorder.view.AddOrderResult;
 import com.pockorder.view.IndexView;
 import com.pockorder.view.MsgResult;
+import com.pockorder.view.OrderResult;
+import com.pockorder.view.UpdateOrderResult;
 
 @RestController
 @RequestMapping("/order")
@@ -23,6 +28,10 @@ public class OrderRestController {
 
 	@Autowired
 	private OrderService orderService;
+	@Autowired
+	private BlackListService blackListService;
+	@Autowired
+	private KeywordWarningService keywordWarningService;
 
 	@Autowired  
 	private HttpSession session;  
@@ -84,7 +93,7 @@ public class OrderRestController {
      */
     @RequestMapping("/add")
     @Logged
-    public Order addNewOrder(HttpSession session,
+    public OrderResult addNewOrder(HttpSession session,
     		@RequestParam(value="orderDate", required=true) String orderDate,
     		@RequestParam(value="orderTime", required=false) String orderTime,
     		@RequestParam(value="price", required=false, defaultValue="0") Integer price,
@@ -105,11 +114,17 @@ public class OrderRestController {
     		repeatCount = 1;
     	}
     	
-    	Order ret = null;
+    	Order order = null;
     	for(int i = 0; i < repeatCount; i++) {
-    		ret = orderService.addOrder(orderDate, orderTime, price, content, paid, paymentAccountID, customerWx,
+    		order = orderService.addOrder(orderDate, orderTime, price, content, paid, paymentAccountID, customerWx,
     				customerName, customerTel, recorder, memo, weijujuNo, branchID, orderNoFlag);
     	}
+    	
+    	AddOrderResult ret = new AddOrderResult();
+    	ret.setOrder(order);
+    	ret.setBlackList(blackListService.isBlackList(order.getCustomerTel()));
+    	ret.setRepeat(orderService.testRepeatOrder(order.getOrderDate(), order.getCustomerTel()));
+    	ret.setKeywordWarningList(keywordWarningService.getKeywordWarningList(order));
     	
     	return ret;
     }
@@ -225,14 +240,17 @@ public class OrderRestController {
     		@RequestParam(value="branchID", required=false) String branchID,
     		@RequestParam(value="orderNoFlag", required=false, defaultValue="yes") String orderNoFlag) {
     	
-    	MsgResult msg = new MsgResult();
-    	if(orderService.updateOrder(orderID, orderDate, orderTime, price,
+    	UpdateOrderResult msg = new UpdateOrderResult();
+    	Order order = orderService.updateOrder(orderID, orderDate, orderTime, price,
     			content, customerWx, customerName, customerTel, recorder,
-    			deliverAddress, memo, weijujuNo, branchID, orderNoFlag) >= 1) {
+    			deliverAddress, memo, weijujuNo, branchID, orderNoFlag);
+    	if(order != null) {
     		msg.setMsg("修改成功！");
+    		msg.setKeywordWarningList(keywordWarningService.getKeywordWarningList(order));
     	} else {
     		msg.setMsg("修改失败，数据不存在！");
     	}
+    	
     	return msg;
     }
     /**

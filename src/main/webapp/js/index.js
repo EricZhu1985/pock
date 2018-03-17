@@ -585,10 +585,25 @@ function editOrder(){
 				$('#editOrderForm').form('clear');
 				$('#tt').tabs('select', '订单');
                 //$('#dg').datagrid('reload');    // reload the user data
+
+				var keywordWarningList = result.keywordWarningList;
+				var keywordWarningMsg = '';
+				for(var i = 0; i < keywordWarningList.length; i++) {
+					var kw = keywordWarningList[i];
+					if(kw.amount <= 1) {
+						keywordWarningMsg += kw.keyword + "(" + kw.memo + "): " + kw.amount + "<br>";
+					}
+				}
+				if(keywordWarningMsg != '') {
+					$.messager.alert('提示','以下库存紧缺，请注意：<br>' + keywordWarningMsg);
+				}
+				$('#kwdg').datagrid('reload');
+				
                 loadList();
 				if(order.orderDate == getNowFormatDate()) {
 					printEditOrder(order.orderID);
 				}
+				
 			}
 			$('#tt').tabs('disableTab', '修改订单');
 		}
@@ -629,13 +644,34 @@ function saveOrderForm() {
 					msg: result.errMsg
 				});
 			} else {
-				var order = result;
+				var order = result.order;
 				$.messager.alert({
 					title: '成功',
 					msg: '增加成功！'
 				});
 				
+				if(result.blackList) {
+					$.messager.alert('提示','提醒：该号码是黑名单号码！');
+				}
 
+				if(result.repeat) {
+					$.messager.alert('提示','提醒：该订单日期存在相同电话号码，请检查是否重复下单！');
+				}
+				
+				var keywordWarningList = result.keywordWarningList;
+				var keywordWarningMsg = '';
+				for(var i = 0; i < keywordWarningList.length; i++) {
+					var kw = keywordWarningList[i];
+					if(kw.amount <= 1) {
+						keywordWarningMsg += kw.keyword + "(" + kw.memo + "): " + kw.amount + "<br>";
+					}
+				}
+				if(keywordWarningMsg != '') {
+					$.messager.alert('提示','以下库存紧缺，请注意：<br>' + keywordWarningMsg);
+				}
+				$('#kwdg').datagrid('reload');
+				
+/**
 			    var orderDate = $('#addFormDate').datebox('getValue');
 			    var tel = $('#addFormTel').textbox('getValue');
 			    //判断是否黑名单
@@ -663,7 +699,7 @@ function saveOrderForm() {
 						}
 					}
 				});
-				
+				**/
                 //$('#dg').datagrid('reload');    // reload the user data
 				$('#addOrderForm').form('reset');
 				$('#addFormPaymentAccount').combobox('select', $('#addFormPaymentAccount').combobox('getData')[0].paymentAccountID);

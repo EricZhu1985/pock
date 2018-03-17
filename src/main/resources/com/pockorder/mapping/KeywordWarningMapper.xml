@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pockorder.dao.KeywordWarningMapper" >
+
+	<resultMap id="keywordWarningRM" type="com.pockorder.domain.KeywordWarning">
+		<result column="ID" property="keywordWarningID" jdbcType="VARCHAR"/>
+		<result column="KEYWORD" property="keyword" jdbcType="VARCHAR"/>
+		<result column="AMOUNT" property="amount" jdbcType="INTEGER"/>
+		<result column="MEMO" property="memo" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	
+	<sql id="KeywordWarning_Column_List" >
+		`ID`, `KEYWORD`, `AMOUNT`,`MEMO`
+	</sql>
+	
+	<select id="select" resultMap="keywordWarningRM" parameterType="java.lang.String" >
+	SELECT 
+		<include refid="KeywordWarning_Column_List" />
+		FROM `KEYWORDWARNING`
+		WHERE 1=1 
+		<if test="keyword != null and keyword != ''">
+		AND `KEYWORD` like CONCAT('%','${keyword}','%' )
+		</if>
+		<if test="memo != null and memo != ''">
+		AND `MEMO` like CONCAT('%','${memo}','%' )
+		</if>
+	</select>
+	
+	<select id="selectByKeywordReverse" resultMap="keywordWarningRM" parameterType="java.lang.String" >
+	SELECT 
+		<include refid="KeywordWarning_Column_List" />
+		FROM `KEYWORDWARNING`
+		WHERE '${keyword}' like CONCAT('%',`KEYWORD`,'%' )
+	</select>
+	
+	<insert id="insert"  parameterType="com.pockorder.domain.KeywordWarning" keyProperty="keywordWarningID" useGeneratedKeys="true">
+	INSERT INTO `KEYWORDWARNING` (`KEYWORD`,`AMOUNT`,`MEMO`)
+		values (#{keyword,jdbcType=VARCHAR}, #{amount,jdbcType=INTEGER} - (SELECT COUNT(*) FROM `ORDER` WHERE `order_date`>=CURDATE() AND `order_content` LIKE CONCAT('%','${keyword}','%' )), #{memo,jdbcType=VARCHAR})
+	</insert>
+	
+	<delete id="delete">
+	DELETE FROM `KEYWORDWARNING` WHERE ID = #{keywordWarningID,jdbcType=VARCHAR}
+	</delete>
+	
+	<select id="selectByID" resultMap="keywordWarningRM" parameterType="java.lang.String" >
+	SELECT 
+		<include refid="KeywordWarning_Column_List" />
+		FROM `KEYWORDWARNING`
+		WHERE  ID = #{keywordWarningID,jdbcType=VARCHAR}
+	</select>
+	
+	<update id="update">
+	UPDATE `KEYWORDWARNING` SET `KEYWORD`=#{keyword,jdbcType=VARCHAR},`AMOUNT`=#{amount,jdbcType=INTEGER},
+		 `MEMO`=#{memo,jdbcType=VARCHAR} WHERE ID = #{keywordWarningID,jdbcType=VARCHAR}
+	</update>
+	
+	<update id="updateAmount">
+	UPDATE `KEYWORDWARNING` SET `AMOUNT`=#{amount,jdbcType=INTEGER} WHERE ID = #{keywordWarningID,jdbcType=VARCHAR}
+	</update>
+	
+</mapper>

@@ -36,12 +36,18 @@
         .fitem input{
             width:160px;
         }
+        .other_div div{
+        	padding-left: 5px;
+        	padding-top: 3px;
+        	font-size: 15px;
+        }
     </style>
     <script type="text/javascript" src="js/jquery.min.js"></script>
     <script type="text/javascript" src="js/jquery.easyui.min.js"></script>
     <script type="text/javascript" src="js/datagrid-groupview.js"></script>
     <script type="text/javascript" src="js/LodopFuncs.js"></script>
     <script type="text/javascript" src="js/blacklist.js"></script>
+    <script type="text/javascript" src="js/keywordwarning.js"></script>
     <script type="text/javascript" src="js/sellablelist.js"></script>
     <script type="text/javascript" src="js/lottery.js"></script>
     <script type="text/javascript" src="js/orderlist.js"></script>
@@ -712,6 +718,173 @@
 			</div>
         </div>
 	<% } %>
+	<div title="关键字提醒">
+		<table id="kwdg" class="easyui-datagrid" style="height:500px;width:100%"
+			url="keywordwarning/query"
+			toolbar="#kwtoolbar" pagination="true" pageSize="10"
+			rownumbers="true" fitColumns="true" singleSelect="true"
+			selectOnCheck="false" checkOnSelect="false">
+			<thead>
+				<tr>
+					<th data-options="field:'ck',checkbox:true"></th>
+					<th field="keyword" width="50">关键字</th>
+					<th field="amount" width="50">数量</th>
+					<th field="memo" width="50">备注</th>
+                    <th data-options="field:'keywordWarningID',width:100,formatter:formatKWOperation">操作</th>
+				</tr>
+			</thead>
+		</table>
+		<div id="kwtoolbar">
+			<div style="padding: 3px">
+				关键字: <input id="query_kw_keyword" class="easyui-textbox" style="width:110px">
+				备注: <input id="query_kw_memo" class="easyui-textbox" style="width:110px">
+				<a href="#" class="easyui-linkbutton" iconCls="icon-search" onClick="javascript:loadKwList()">查询</a>
+			</div>
+			<div>
+				<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="newKeyword()">增加</a>
+				<!-- a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="deleteKeyword()">删除</a> -->
+			</div>
+		</div>
+	
+		<div id="kwdlg" class="easyui-dialog" style="width:400px;height:280px;padding:10px 20px"
+				closed="true" buttons="#kwdlg-buttons">
+			<div class="ftitle">增加关键词</div>
+			<form id="kwfm" method="post" novalidate>
+				<div class="fitem">
+					<label>关键词：</label>
+					<input name="keyword" class="easyui-textbox" required="true">
+				</div>
+				<div class="fitem">
+					<label>数量：</label>
+					<input name="amount" class="easyui-textbox" required="true">
+				</div>
+				<div class="fitem">
+					<label>备注：</label>
+					<input name="memo" class="easyui-textbox" data-options="multiline:true" style="height:50px;">
+				</div>
+			</form>
+		</div>
+		<div id="kwdlg-buttons">
+			<a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" onclick="saveKeyword()" style="width:90px">保存</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#kwdlg').dialog('close')" style="width:90px">取消</a>
+		</div>
+		<div id="kwupdatedlg" class="easyui-dialog" style="width:400px;height:280px;padding:10px 20px"
+				closed="true" buttons="#kwupdatedlg-buttons">
+			<div class="ftitle">修改关键词</div>
+			<form id="kwupdatefm" method="post" novalidate>
+				<input type="hidden" id="keywordWarningID" name="keywordWarningID"/>
+				<div class="fitem">
+					<label>关键词：</label>
+					<input name="keyword" class="easyui-textbox" required="true">
+				</div>
+				<div class="fitem">
+					<label>数量：</label>
+					<input name="amount" class="easyui-textbox" required="true">
+				</div>
+				<div class="fitem">
+					<label>备注：</label>
+					<input name="memo" class="easyui-textbox" data-options="multiline:true" style="height:50px;">
+				</div>
+			</form>
+		</div>
+		<div id="kwupdatedlg-buttons">
+			<a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" onclick="updateKeyword()" style="width:90px">保存</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#kwupdatedlg').dialog('close')" style="width:90px">取消</a>
+		</div>
+		<div id="kwaddamountdlg" class="easyui-dialog" style="width:400px;height:280px;padding:10px 20px"
+				closed="true" buttons="#kwaddamountdlg-buttons">
+			<div class="ftitle">修改关键词</div>
+			<form id="kwaddamountfm" method="post" novalidate>
+				<input type="hidden" id="keywordWarningID" name="keywordWarningID"/>
+				<div class="fitem">
+					<label>关键词：</label>
+					<input name="keyword" class="easyui-textbox" required="true" editable="false">
+				</div>
+				<div class="fitem">
+					<label>补充数量：</label>
+					<input id="kwaddamountfm_addAmount" name="addAmount" class="easyui-textbox" required="true">
+				</div>
+			</form>
+		</div>
+		<div id="kwaddamountdlg-buttons">
+			<a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" onclick="addKwAmount()" style="width:90px">保存</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#kwaddamountdlg').dialog('close')" style="width:90px">取消</a>
+		</div>
+    </div>
+	<div title="其它">
+		<div class="other_div" style="height:500px;">
+			<div>四磅蛋糕568元 方形4磅（23*23）</div>
+			<div>五磅蛋糕728元 方形5磅（26*26）</div>
+			<div>六磅蛋糕828元 方形6磅（28.5*28.5）</div>
+			<div>七磅蛋糕980元 方形7磅（27*35）</div>
+			<div>八磅蛋糕1118元 方形8磅（30*36）</div>
+			<div>娃娃4磅双层是588元</div>
+			<div>&nbsp;</div>
+			<div>数码打印圆形1磅+20元 直径13cm</div>
+			<div>数码打印圆形1.5磅+20元 直径16cm</div>
+			<div>                    奖状方形 长16cm</div>
+			<div>数码打印圆形2磅+25元 直径18cm</div>
+			<div>                    方形13cm*17cm</div>
+			<div>手机方形蛋糕2磅 13*23 高21.5cm</div>
+			<div>数码打印圆形3磅+30元 直径 21</div>
+			<div>数码蜘蛛侠：1磅高7cm，1.5磅8.5cm，2磅9.5cm</div>
+			<div>立体足球蛋糕: 1磅198元，1.5磅283元，2磅358元</div>
+			<div>简单翻糖蛋糕：1磅 500元  </div>
+			<div>翻糖托马斯蛋糕：6寸：700元；8寸：1300元；双层6寸+8寸：2000元</div>
+			<div>*优惠：一万元以上的订单可以打九折</div>
+			<div>*甜品桌3000元起订</div>
+			<div>甜品桌:
+			<table border="1" cellspacing="0" style="font-size:15px">
+				<tr>
+					<th>名称</<th><th>价格</th>
+					<th>名称</<th><th>价格</th>
+				</tr>
+				<tr>
+					<td>插牌cupcake</td><td>25元/个</td>
+					<td>谷物布丁</td><td>30元/个</td>
+				</tr>
+				<tr>
+					<td>翻糖cupcake</td><td>35元/个</td>
+					<td>翻糖饼干</td><td>30元/个</td>
+				</tr>
+				<tr>
+					<td>大布丁</td><td>30元/个</td>
+					<td>双层翻糖蛋糕</td><td>2000元/个</td>
+				</tr>
+				<tr>
+					<td>曲奇一瓶</td><td>180元/瓶</td>
+					<td>6寸裸蛋糕</td><td>500元/个</td>
+				</tr>
+				<tr>
+					<td>水果挞</td><td>18元/个</td>
+					<td>水果车轮泡芙</td><td>238元/个</td>
+				</tr>
+				<tr>
+					<td>场地布置费</td><td>500元</td>
+					<td>&nbsp;</td><td>&nbsp;</td>
+				</tr>
+			</table>
+			</div>
+			<div>
+			账号：
+			<table border="1" cellspacing="0" style="font-size:15px">
+				<tr>
+					<th>名称</<th><th>账号</th><th>密码</th>
+				</tr>
+				<tr>
+					<td>美团</td><td>pieceofcake</td><td>pock2013</td>
+				</tr>
+				<tr>
+					<td>大众点评</td><td>450923</td><td>pock2013</td>
+				</tr>
+				<tr>
+					<td>糯米网</td><td>fspock@y.com</td><td>pock2013</td>
+				</tr>
+			</table>
+			
+			</div>
+        </div>
+    </div>
     </div>
 	<form id="ff" method="post"></form>
 	<div id="page1" style="width: 160px; padding: 40px 10px;">
